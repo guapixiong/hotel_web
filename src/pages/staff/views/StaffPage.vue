@@ -1,33 +1,38 @@
 <template>
     <a-layout id="components-layout-demo-custom-trigger">
         <a-layout-sider v-model="collapsed" :trigger="null" collapsible style="width: 211px;height: 1000px">
-            <div class="logo" />
+            <div class="logo"/>
             <a-menu theme="dark" mode="inline" :default-selected-keys="['1']">
                 <a-menu-item key="1">
-                    <a-icon type="user" />
-                    <span><router-link to="/frontPage" style="color:#fff">首页</router-link></span>
+                    <router-link to="/frontPage"><a-icon type="home"/>首页</router-link>
                 </a-menu-item>
                 <a-menu-item key="2">
-                    <a-icon type="video-camera" />
-                    <span >nav 2</span>
+                    <router-link to="/recordPage"><a-icon type="carry-out"/>订单管理</router-link>
                 </a-menu-item>
                 <a-menu-item key="3">
-                    <a-icon type="upload" />
-                    <span>nav 3</span>
+                    <router-link to="/roomPage"><a-icon type="bank"/><span>房间管理</span></router-link>
                 </a-menu-item>
+                <a-menu-item key="4">
+                    <router-link to="/commodityPage"><a-icon type="shopping"/><span>商品管理</span></router-link>
+                </a-menu-item>
+                <a-menu-item key="5">
+                    <router-link to="/userPage"><a-icon type="user"/><span>用户管理</span></router-link>
+                </a-menu-item>
+                <a-menu-item key="6">
+                    <router-link to="/operatePage"><a-icon type="control"/><span>操作日志</span></router-link>
+                </a-menu-item>
+
             </a-menu>
         </a-layout-sider>
         <a-layout>
-            <a-layout-header style="background: #fff; padding: 0=">
+            <a-layout-header style="background: #fff;">
                 <a-icon
                     class="trigger"
                     :type="collapsed ? 'menu-unfold' : 'menu-fold'"
                     @click="collapsed=!collapsed"
                 />
             </a-layout-header>
-            <a-layout-content
-                :style="{ margin: '24px 16px', padding: '24px', background: '#fff' }"
-            >
+            <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff' }">
                 <router-view></router-view>
             </a-layout-content>
         </a-layout>
@@ -36,7 +41,7 @@
 
 <script>
 export default {
-  name: "staff-page",
+    name: "staff-page",
     data() {
         return {
             collapsed: false,
@@ -63,11 +68,13 @@ export default {
     background: rgba(255, 255, 255, 0.2);
     margin: 16px;
 }
+
 .ant-menu-item-selected {
     background-color: #8080FF !important;
     color: white !important;
 }
-.ant-menu-item-active{
+
+.ant-menu-item-active {
     background-color: #8080FF !important;
 }
 </style>
