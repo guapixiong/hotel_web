@@ -1,13 +1,13 @@
 <template>
     <a-layout id="components-layout-demo-custom-trigger">
-        <a-layout-sider v-model="collapsed" :trigger="null" collapsible style="width: 211px;height: 1000px">
+        <a-layout-sider v-model="collapsed" :trigger="null" collapsible style="width: 211px;height: 1080px">
             <div class="logo"/>
             <a-menu theme="dark" mode="inline" :default-selected-keys="['1']">
                 <a-menu-item key="1">
-                    <router-link to="/frontPage"><a-icon type="home"/>首页</router-link>
+                    <router-link to="/frontPage"><a-icon type="home"/><span>首页</span></router-link>
                 </a-menu-item>
                 <a-menu-item key="2">
-                    <router-link to="/recordPage"><a-icon type="carry-out"/>订单管理</router-link>
+                    <router-link to="/recordPage"><a-icon type="carry-out"/><span>订单管理</span></router-link>
                 </a-menu-item>
                 <a-menu-item key="3">
                     <router-link to="/roomPage"><a-icon type="bank"/><span>房间管理</span></router-link>
@@ -47,6 +47,9 @@ export default {
             collapsed: false,
         };
     },
+    mounted() {
+        this.$router.push('/frontPage')
+    }
 }
 </script>
 
