@@ -109,8 +109,9 @@ export default {
             })
             //let start=moment().add(-1,'days')
             //let end=moment()
-            let start=moment("2023-03-31 00:01")
-            let end=moment('2023-03-31 23:59')
+            //测试数据
+            let start=moment("2023-04-03 00:01")
+            let end=moment('2023-04-03 23:59')
             let param={
                 start:start.format('yyyy-MM-DD 00:01'),
                 end:end.format('yyyy-MM-DD 23:59')

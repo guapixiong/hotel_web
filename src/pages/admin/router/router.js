@@ -17,11 +17,11 @@ const routes = [
         component: ()=>import('@/pages/admin/components/CommodityPage'),
     },
     {
-        path: '/UserPage',
+        path: '/userPage',
         component: ()=>import('@/pages/admin/components/UserPage'),
     },
     {
-        path: '/OperatePage',
+        path: '/operatePage',
         component: ()=>import('@/pages/admin/components/OperatePage'),
     },
 ]

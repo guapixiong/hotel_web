@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import App from './AdminPage';
+import App from './views/AdminPage';
 import router from './router/router'
 import VueRouter from "vue-router";
 import Antd from 'ant-design-vue'
