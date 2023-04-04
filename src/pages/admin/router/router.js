@@ -5,6 +5,14 @@ const routes = [
         component: () => import('@/pages/admin/components/FrontPage.vue'),
     },
     {
+      path:'/accommodation/register',
+        component:()=>import('@/pages/admin/components/accommodation/AccommodationRegistration')
+    },
+    {
+        path:'/accommodation/reserve',
+        component:()=>import('@/pages/admin/components/accommodation/RoomReservation')
+    },
+    {
         path: '/recordPage',
         component: () => import('@/pages/admin/components/RecordPage.vue'),
     },
