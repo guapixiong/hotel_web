@@ -17,3 +17,10 @@ export function imageUpload(params){
         headers:{'Content-Type':'multipart/form-data'}
     })
 }
+export function imageDownload(params){
+    return request({
+        url:'/common/images/download',
+        params:params,
+        responseType: 'blob',
+    })
+}
