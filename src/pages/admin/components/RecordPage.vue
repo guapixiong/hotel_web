@@ -134,7 +134,7 @@ export default {
                     me.table1.data=[]
                     me.table1.loading=[]
                 }
-                console.log(r.data)
+                //console.log(r.data)
                 me.table1.loading=false
             })
         }

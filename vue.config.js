@@ -11,7 +11,12 @@ module.exports = defineConfig({
         pathRewrite: { // pathRewrite 的作用是把实际Request Url中的'/api'用""代替
           '^/api': ""
         }
+      },
+      '/images':{
+        target: "http://127.0.0.1:8081",
+        changeOrigin: true, //是否跨域
       }
+
     }
   },
   transpileDependencies: true,

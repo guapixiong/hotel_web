@@ -9,6 +9,12 @@ export function getAllRoomDetail(){
         url:'/room/getAllRoomDetail'
     })
 }
+
+/**
+ * 图片上传
+ * @param params
+ * @returns {AxiosPromise}
+ */
 export function imageUpload(params){
     return request({
         url:'/common/images/upload',
@@ -17,6 +23,12 @@ export function imageUpload(params){
         headers:{'Content-Type':'multipart/form-data'}
     })
 }
+
+/**
+ * 图片下载
+ * @param params
+ * @returns {AxiosPromise}
+ */
 export function imageDownload(params){
     return request({
         url:'/common/images/download',
@@ -24,3 +36,42 @@ export function imageDownload(params){
         responseType: 'blob',
     })
 }
+
+/**
+ * 添加一个房间记录
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function insertRoom(params){
+    return request({
+        url:'/room/insertRoom',
+        method:'post',
+        data:params,
+    })
+}
+
+/**
+ * 更新房间信息
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function updateRoom(params){
+    return request({
+        url:'/room/updateRoom',
+        method:'post',
+        data:params,
+    })
+}
+
+/**
+ * 删除房间
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function deleteRoom(params){
+    return request({
+        url:'/room/deleteRoom',
+        params:params
+    })
+}
+
