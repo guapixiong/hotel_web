@@ -12,9 +12,6 @@
                     </a-select>
                 </a-form-item>
 
-                <!--                <a-form-item label="时间">-->
-                <!--                    <a-range-picker  :format="timeFormat" v-model="time" size="small" />-->
-                <!--                </a-form-item>-->
                 <a-form-item>
                     <a-button type="primary" @click="addRoomModal">新增</a-button>
                 </a-form-item>
@@ -23,7 +20,9 @@
         <a-table style="margin: 20px;border-radius: 5px" :columns="table1.columns" :dataSource="table1.data"
                  :rowKey="(record)=>record.room_id"
                  :loading="table1.loading" :pagination="table1.pagination" size="small" bordered>
-            <span slot="type" slot-scope="text"><a-tag color="green">{{ roomType[text].value }}</a-tag></span>
+            <span slot="type" slot-scope="text"><a-tag :color="colorList[text]">{{ roomType[text].value }}</a-tag></span>
+            <span slot="room_price" slot-scope="text">¥{{text}}</span>
+            <span slot="hour_price" slot-scope="text">¥{{text}}</span>
             <span slot="room_url" slot-scope="text"><img style="width: 150px;height: 80px" :src=text></span>
             <span slot="status" slot-scope="text"><a-switch checked-children="已开启" un-checked-children="已关闭"
                                                             :default-checked="text==='1'" disabled/></span>
@@ -166,12 +165,14 @@ export default {
                     {
                         title: '房间价格',
                         align: 'center',
-                        dataIndex: 'room_price'
+                        dataIndex: 'room_price',
+                        scopedSlots: {customRender: 'room_price'}
                     },
                     {
                         title: '钟点房价格',
                         align: 'center',
-                        dataIndex: 'hour_price'
+                        dataIndex: 'hour_price',
+                        scopedSlots: {customRender: 'hour_price'}
                     },
                     {
                         title: '房间照片',
@@ -200,18 +201,11 @@ export default {
                 dataCopy: [],
                 pagination: {
                     total: 0,
-                    pageSize: 20,//每页中显示10条数据
+                    pageSize: 10,//每页中显示10条数据
                     //showSizeChanger: true,
                     // pageSizeOptions: ["10", "20", "50", "100"],//每页中显示的数据
                     showTotal: total => `共有 ${total} 条数据`,  //分页中显示总的数据
                 },
-                status: {
-                    '-1': ['已退款', 'red'],
-                    '0': ['已取消', 'grey'],
-                    '1': ['已预定', 'purple'],
-                    '2': ['待结账', 'orange'],
-                    '3': ['已完成', 'green']
-                }
             },
             //增加一条记录房间对应信息
             room: {
@@ -248,6 +242,7 @@ export default {
                 file: {},
                 fileList: []
             },
+            colorList:['green','orange','blue','purple','red','pink']
         }
     },
     mounted() {
@@ -336,15 +331,15 @@ export default {
             }
             //console.log(this.imageStatus)
             if (isJpgOrPng && isLt2M) {
-                this.imageStatus.file = file
-                this.imageStatus.fileList.push(file)
+                this.imageStatus1.file = file
+                this.imageStatus1.fileList.push(file)
             }
-            //console.log(this.imageStatus.file)
+            //console.log(this.imageStatus1.file)
             return false
         },
         removeImage1() {
-            this.imageStatus.file = {}
-            this.imageStatus.fileList = []
+            this.imageStatus1.file = {}
+            this.imageStatus1.fileList = []
             return true
         },
         editRoom(record) {
@@ -370,20 +365,10 @@ export default {
                 this.table1.data=this.table1.dataCopy
         },
         changeSelect(value) {
-            switch (value) {
-                case 'all':
-                    this.table1.data = this.table1.dataCopy.filter(() => true);
-                    break
-                case '1':
-                    this.table1.data = this.table1.dataCopy.filter((e) => e.room_type === '1');
-                    break
-                case '2':
-                    this.table1.data = this.table1.dataCopy.filter((e) => e.room_type === '2');
-                    break
-                case '3':
-                    this.table1.data = this.table1.dataCopy.filter((e) => e.room_type === '3');
-                    break
-            }
+            if(value==='all')
+                this.table1.data = this.table1.dataCopy.filter(() => true);
+            else
+                this.table1.data = this.table1.dataCopy.filter((e) => e.room_type === value);
         },
         changeState(value) {
             if (value)
@@ -436,6 +421,7 @@ export default {
                 file: {},
                 fileList: []
             }
+            me.room.visible=false
         },
         async updateRoomOk() {
             let me = this
