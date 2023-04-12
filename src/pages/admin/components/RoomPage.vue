@@ -7,20 +7,21 @@
                 </a-form-item>
                 <a-form-item label="房间类型">
                     <a-select default-value="all" style="width: 200px" @change="changeSelect">
-                        <a-select-option v-for="item in roomType" :key="item.key" :value="item.key">{{ item.value }}
+                        <a-select-option key="all" value="all">全部</a-select-option>
+                        <a-select-option v-for="item in roomType" :key="item.id" :value="item.id">{{ item.type }}
                         </a-select-option>
                     </a-select>
                 </a-form-item>
 
                 <a-form-item>
-                    <a-button type="primary" @click="addRoomModal">新增</a-button>
+                    <a-button type="primary" @click="addRoomModal">新增房间</a-button>
                 </a-form-item>
             </a-form>
         </a-card>
         <a-table style="margin: 20px;border-radius: 5px" :columns="table1.columns" :dataSource="table1.data"
                  :rowKey="(record)=>record.room_id"
                  :loading="table1.loading" :pagination="table1.pagination" size="small" bordered>
-            <span slot="type" slot-scope="text"><a-tag :color="colorList[text]">{{ roomType[text].value }}</a-tag></span>
+            <span slot="type" slot-scope="text,record"><a-tag :color="colorList[record.type_id]">{{text}}</a-tag></span>
             <span slot="room_price" slot-scope="text">¥{{text}}</span>
             <span slot="hour_price" slot-scope="text">¥{{text}}</span>
             <span slot="room_url" slot-scope="text"><img style="width: 150px;height: 80px" :src=text></span>
@@ -57,10 +58,8 @@
                     </a-upload>
                 </a-form-model-item>
                 <a-form-model-item label="房间类型">
-                    <a-select v-model="room.form.roomType" placeholder="请选择类型">
-                        <a-select-option value="1">单人间</a-select-option>
-                        <a-select-option value="2">双人间</a-select-option>
-                        <a-select-option value="3">三人间</a-select-option>
+                    <a-select v-model="room.form.typeId" placeholder="请选择类型">
+                        <a-select-option v-for="item in roomType" :key="item.id" :value="item.id">{{ item.type }}</a-select-option>
                     </a-select>
                 </a-form-model-item>
                 <a-form-model-item label="房间介绍">
@@ -96,10 +95,8 @@
                     </a-upload>
                 </a-form-model-item>
                 <a-form-model-item label="房间类型">
-                    <a-select v-model="room1.form.roomType" placeholder="请选择类型">
-                        <a-select-option value="1">单人间</a-select-option>
-                        <a-select-option value="2">双人间</a-select-option>
-                        <a-select-option value="3">三人间</a-select-option>
+                    <a-select v-model="room1.form.typeId" placeholder="请选择类型">
+                        <a-select-option v-for="item in roomType" :key="item.id" :value="item.id">{{ item.type }}</a-select-option>
                     </a-select>
                 </a-form-model-item>
                 <a-form-model-item label="房间介绍">
@@ -127,21 +124,14 @@ import moment from 'moment'
 import Util from '@/util/generalMethod'
 moment.locale('zh-cn')
 // eslint-disable-next-line no-unused-vars
-import {getAllRoomDetail, imageUpload, imageDownload, insertRoom, updateRoom, deleteRoom} from '@/api/admin/roomApi'
+import {getTypeInfo,getAllRoomDetail, imageUpload, imageDownload, insertRoom, updateRoom, deleteRoom} from '@/api/admin/roomApi'
 
 export default {
     name: "RoomPage",
     data() {
         return {
             selectContent:'',
-            selectType: 'all',
-            roomType: [
-                {key: 'all', value: '全部'},
-                {key: '1', value: '单人间'},
-                {key: '2', value: '双人间'},
-                {key: '3', value: '三人间'}
-            ],
-
+            roomType: [],
             table1: {
                 loading: false,
                 columns: [
@@ -158,7 +148,7 @@ export default {
                     {
                         title: '房间类型',
                         align: 'center',
-                        dataIndex: 'room_type',
+                        dataIndex: 'type',
                         scopedSlots: {customRender: 'type'}
 
                     },
@@ -213,7 +203,7 @@ export default {
                 form: {
                     roomNumber: '',
                     roomUrl: '',
-                    roomType: '',
+                    typeId:1,
                     roomPrice: '',
                     hourPrice: '',
                     roomIntroduction: '',
@@ -231,7 +221,7 @@ export default {
                     roomId: '',
                     roomNumber: '',
                     roomUrl: '',
-                    roomType: '',
+                    typeId: null,
                     roomPrice: '',
                     hourPrice: '',
                     roomIntroduction: '',
@@ -252,6 +242,13 @@ export default {
 
         async loadTable1() {
             let me = this
+            me.roomType=await new Promise((resolve => {
+                getTypeInfo().then(r=>{
+                    if(r.status===200&&r.data.length>0){
+                        resolve(r.data)
+                    }
+                })
+            }))
             me.table1.loading = true
             let data = await me.getAllRoom()
             me.table1.data = data
@@ -259,6 +256,10 @@ export default {
             //console.log(me.table1.data)
             me.table1.dataCopy = [...me.table1.data]
         },
+        /**
+         * 获取所有房间信息
+         * @returns {Promise<unknown>}
+         */
         getAllRoom() {
             return new Promise((resolve) => {
                 getAllRoomDetail().then(r => {
@@ -271,6 +272,11 @@ export default {
                 })
             })
         },
+        /**
+         * 上传图片文件
+         * @param file
+         * @returns {Promise<unknown>}
+         */
         uploadImage(file) {
             return new Promise((resolve => {
                 //let file = me.imageStatus.file;
@@ -298,6 +304,11 @@ export default {
             })
 
         },
+        /**
+         * 上传前校验
+         * @param file
+         * @returns {boolean}
+         */
         beforeUpload(file) {
             const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
             if (!isJpgOrPng) {
@@ -315,6 +326,10 @@ export default {
             //console.log(this.imageStatus.file)
             return false
         },
+        /**
+         * 去除图片
+         * @returns {boolean}
+         */
         removeImage() {
             this.imageStatus.file = {}
             this.imageStatus.fileList = []
@@ -342,19 +357,26 @@ export default {
             this.imageStatus1.fileList = []
             return true
         },
+        /**
+         * 编辑房间信息
+         * @param record
+         */
         editRoom(record) {
             let me = this
             me.room1.visible = true
             me.room1.form.roomId = record.room_id
             me.room1.form.roomUrl = record.room_url
             me.room1.form.roomNumber = record.room_number
-            me.room1.form.roomType = record.room_type
+            me.room1.form.typeId = record.type_id
             me.room1.form.roomPrice = record.room_price
             me.room1.form.hourPrice = record.hour_price
             me.room1.form.roomIntroduction = record.room_introduction
             me.room1.form.roomState = record.room_state
-            console.log(record)
+            //console.log(record)
         },
+        /**
+         * 查询内容改变
+         */
         contentChange(){
             let me= this
             if(this.selectContent.length>0){
@@ -364,12 +386,20 @@ export default {
             else
                 this.table1.data=this.table1.dataCopy
         },
+        /**
+         * 类别切换
+         * @param value
+         */
         changeSelect(value) {
             if(value==='all')
                 this.table1.data = this.table1.dataCopy.filter(() => true);
             else
-                this.table1.data = this.table1.dataCopy.filter((e) => e.room_type === value);
+                this.table1.data = this.table1.dataCopy.filter((e) => e.type_id === value);
         },
+        /**
+         * 房间状态切换
+         * @param value
+         */
         changeState(value) {
             if (value)
                 this.room.form.roomState = '1'
@@ -382,16 +412,26 @@ export default {
             else
                 this.room1.form.roomState = '0'
         },
+        /**
+         * 打开新增对话框
+         */
         addRoomModal() {
             let me = this
             me.room.visible = true
         },
+        /**
+         * 取消新增对话框
+         */
         cancelRoomModal() {
             this.room.visible = false
         },
         cancelRoomModal1() {
             this.room1.visible = false
         },
+        /**
+         * 提交新增记录
+         * @returns {Promise<void>}
+         */
         async addRoomOk() {
             let me = this
             let url = ''
@@ -404,14 +444,17 @@ export default {
                 insertRoom(me.room.form).then(r => {
                     if (r.status === 200) {
                         me.$message.success("保存成功")
+                        me.room.visible=false
+                        me.loadTable1()
                     } else
                         me.$message.error("保存失败")
                 })
             }))
+
             me.room.form = {
                 roomNumber: '',
                 roomUrl: '',
-                roomType: '',
+                typeId: '',
                 roomPrice: '',
                 hourPrice: '',
                 roomIntroduction: '',
@@ -421,8 +464,12 @@ export default {
                 file: {},
                 fileList: []
             }
-            me.room.visible=false
+
         },
+        /**
+         * 更新房间记录
+         * @returns {Promise<void>}
+         */
         async updateRoomOk() {
             let me = this
             let url = ''
@@ -435,6 +482,8 @@ export default {
                 updateRoom(me.room1.form).then(r => {
                     if (r.status === 200 && r.data === 1) {
                         me.$message.success("修改成功")
+                        me.room1.visible=false
+                        me.loadTable1()
                     } else
                         me.$message.error("修改失败")
                 })
@@ -444,16 +493,22 @@ export default {
                 fileList: []
             }
         },
+        /**
+         * 删除房间
+         * @param record
+         */
         deleteRoom(record) {
             let me = this
             deleteRoom({room_id: record.room_id}).then(r => {
-                    if (r.data === 1)
+                    if (r.data === 1){
                         me.$message.success("删除成功")
+                        me.loadTable1()
+                    }
                     else
                         me.$message.error("删除失败")
                 }
             )
-            console.log(record.room_id)
+            //console.log(record.room_id)
         }
     }
 }

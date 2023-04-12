@@ -75,3 +75,13 @@ export function deleteRoom(params){
     })
 }
 
+/**
+ * 获取房间类型信息
+ * @returns {AxiosPromise}
+ */
+export function getTypeInfo(){
+    return request({
+        url:'/room/getTypeInfo'
+    })
+}
+
