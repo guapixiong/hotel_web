@@ -121,6 +121,7 @@ export default {
                         title: '商品编号',
                         align: 'center',
                         dataIndex: 'commodity_id'
+
                     },
                     {
                         title: '商品名称',

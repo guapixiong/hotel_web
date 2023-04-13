@@ -17,7 +17,7 @@
                         </a-menu-item>
                     </a-sub-menu>
                     <a-menu-item key="2">
-                        <router-link to="/recordPage"><a-icon type="carry-out"/><span>财务统计</span></router-link>
+                        <router-link to="/recordPage"><a-icon type="carry-out"/><span>订单管理</span></router-link>
                     </a-menu-item>
                     <a-menu-item key="3">
                         <router-link to="/roomPage"><a-icon type="bank"/><span>房间管理</span></router-link>
