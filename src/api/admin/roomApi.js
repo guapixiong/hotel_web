@@ -85,3 +85,10 @@ export function getTypeInfo(){
     })
 }
 
+export function getAvailableRoomByTime(params){
+    return request({
+        url:'/room/getAvailableRoomByTime',
+        params:params
+    })
+}
+
