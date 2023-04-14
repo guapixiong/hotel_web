@@ -85,10 +85,23 @@ export function getTypeInfo(){
     })
 }
 
+/**
+ * 获取当前可利用的房间
+ * @param params
+ * @returns {AxiosPromise}
+ */
 export function getAvailableRoomByTime(params){
     return request({
         url:'/room/getAvailableRoomByTime',
         params:params
+    })
+}
+
+export function insertReservation(params){
+    return request({
+        url:'/room/insertReservation',
+        method:'post',
+        data:params
     })
 }
 

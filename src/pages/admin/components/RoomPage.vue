@@ -41,9 +41,9 @@
 
             </span>
         </a-table>
-        <a-modal :visible="room.visible" @ok="addRoomOk" @cancel="cancelRoomModal">
-            <a-form-model :label-col="{span:5}" :wrapper-col="{span:12}">
-                <a-form-model-item label="房间门牌号">
+        <a-modal  :visible="room.visible" @ok="addRoomOk" @cancel="cancelRoomModal"  >
+            <a-form-model ref="roomForm" :label-col="{span:5}" :wrapper-col="{span:12}" :model="room.form" :rules="room.rules">
+                <a-form-model-item label="房间门牌号" prop="roomNumber">
                     <a-input v-model="room.form.roomNumber"></a-input>
                 </a-form-model-item>
                 <a-form-model-item label="房间照片">
@@ -208,7 +208,8 @@ export default {
                     hourPrice: '',
                     roomIntroduction: '',
                     roomState: '1',
-                }
+                },
+                rules:{roomNumber:[{required:true,message:'请输入房间号',trigger: 'blur'}]},
             },
             imageStatus: {
                 file: {},
@@ -226,7 +227,8 @@ export default {
                     hourPrice: '',
                     roomIntroduction: '',
                     roomState: '1',
-                }
+                },
+                rules:{},
             },
             imageStatus1: {
                 file: {},
@@ -450,7 +452,6 @@ export default {
                         me.$message.error("保存失败")
                 })
             }))
-
             me.room.form = {
                 roomNumber: '',
                 roomUrl: '',
@@ -464,7 +465,6 @@ export default {
                 file: {},
                 fileList: []
             }
-
         },
         /**
          * 更新房间记录

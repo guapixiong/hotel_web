@@ -15,6 +15,9 @@
                         <a-menu-item key="8">
                             <router-link to="/accommodation/register"><a-icon type="carry-out"/><span>住宿登记</span></router-link>
                         </a-menu-item>
+                        <a-menu-item key="9">
+                            <router-link to="/accommodation/fastCheckIn"><a-icon type="carry-out"/><span>快速入住</span></router-link>
+                        </a-menu-item>
                     </a-sub-menu>
                     <a-menu-item key="2">
                         <router-link to="/recordPage"><a-icon type="carry-out"/><span>订单管理</span></router-link>
