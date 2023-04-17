@@ -75,8 +75,6 @@ export default {
                 roomNature: [{required:true,trigger:'change'}],
                 timePicker:[{required:true}],
                 roomId:[{required:true,message:'请选择房间'}]
-
-
             },
             roomData:[],//通过选定日期来查询是否有空余的房间
             roomDataCopy:[],

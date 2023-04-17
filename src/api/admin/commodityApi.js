@@ -50,9 +50,26 @@ export function updateCommodity(params){
         data:params
     })
 }
+
+/**
+ * 删除一条商品记录
+ * @param params
+ * @returns {AxiosPromise}
+ */
 export function deleteCommodity(params){
     return request({
         url:'/commodity/deleteCommodity',
+        params:params
+    })
+}
+
+/**
+ * 通过时间来获取商品记录
+ * @returns {AxiosPromise}
+ */
+export function getCommodityRecordByTime(params){
+    return request({
+        url:'/commodity/getCommodityRecordByTime',
         params:params
     })
 }

@@ -36,6 +36,10 @@ const routes = [
         path: '/operatePage',
         component: ()=>import('@/pages/admin/components/OperatePage'),
     },
+    {
+        path:'/commodityRecord',
+        component:()=>import('@/pages/admin/components/CommodityRecord'),
+    }
 ]
 const router = new VueRouter({
     routes,

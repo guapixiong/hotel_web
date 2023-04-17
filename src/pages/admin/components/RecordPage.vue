@@ -30,7 +30,7 @@ export default {
     data(){
         return{
             timeFormat: 'YYYY-MM-DD',
-            time:[moment('2023-03-15'),moment('2023-04-15')],
+            time:[moment('2023-03-01'),moment('2023-04-30')],
             table1:{
                 loading:false,
                 columns:[
@@ -52,7 +52,7 @@ export default {
                     {
                         title:'房间名',
                         align: 'center',
-                        dataIndex: 'room_name',
+                        dataIndex: 'room_number',
                     },
                     {
                         title:'订单状态',

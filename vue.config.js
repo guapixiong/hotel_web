@@ -23,7 +23,7 @@ module.exports = defineConfig({
   pages:{
     //主页面
     index:{
-      entry: './src/main.js',
+      entry: './src/pages/login/login.js',
       template: './public/index.html',
       title: '用户登录'
     },
