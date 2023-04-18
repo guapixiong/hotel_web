@@ -12,6 +12,10 @@ const routes = [
     {
         path: '/signUp',
         component:()=>import('@/pages/login/components/SignUp')
+    },
+    {
+        path:'/goToHome',
+        redirect:'/admin/frontPage'
     }
 ]
 

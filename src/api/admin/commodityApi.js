@@ -73,3 +73,14 @@ export function getCommodityRecordByTime(params){
         params:params
     })
 }
+
+/**
+ * 提交多条商品订单
+ */
+export function insertCommodityRecords(params){
+    return request({
+        url:'/commodity/insertCommodityRecords',
+        method:'post',
+        data:params
+    })
+}

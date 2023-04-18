@@ -20,7 +20,7 @@ export default {
         }
     },
     mounted() {
-        //this.$router.push('/signIn')
+        this.$router.push('/signIn')
     }
 }
 </script>

@@ -4,12 +4,30 @@
   @date : 2023-04-17 16:45
 -->
 <template>
-    <div>登录</div>
+    <div>
+        <a-button @click="goToHome">登录</a-button>
+        <a-button @click="goToSignUp">注册</a-button>
+    </div>
 </template>
 
 <script>
 export default {
-    name: "SignIn"
+    name: "SignIn",
+    data(){
+        return{
+
+        }
+    },
+    methods:{
+        goToHome(){
+            this.$router.push('/goToHome')
+
+        },
+        goToSignUp(){
+            this.$router.push('/signIn')
+        }
+
+    },
 }
 </script>
 

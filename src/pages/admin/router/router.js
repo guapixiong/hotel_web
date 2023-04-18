@@ -17,6 +17,10 @@ const routes = [
         component:()=>import('@/pages/admin/components/accommodation/FastCheckIn')
     },
     {
+      path:'/accommodation/commodityAdd/:id',
+        component:()=>import('@/pages/admin/components/accommodation/CommodityAdd')
+    },
+    {
         path: '/recordPage',
         component: () => import('@/pages/admin/components/RecordPage.vue'),
     },

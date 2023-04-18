@@ -44,7 +44,7 @@
                 </a-popconfirm>
                 <a-button v-show="record.order_status==='2'" type="primary"
                           @click="billPlease(record.order_id)">结账</a-button>
-                <a-button v-show="record.order_status==='2'" style="margin-left: 5px">添加商品</a-button>
+                <a-button v-show="record.order_status==='2'" style="margin-left: 5px" @click="goToCommodityAdd(record.order_id)">添加商品</a-button>
                 <a-button style="margin-left: 5px">详情</a-button>
             </span>
         </a-table>
@@ -64,6 +64,12 @@
             <a-button type="primary" @click="addOccupant">添加</a-button>
             <a-button type="danger" style="margin-left: 20px" @click="deleteOccupant">删除</a-button>
         </a-modal>
+<!--        <a-modal style="width: 1500px;height: 600px" title="餐饮添加" :visible="commodityAddModal.visible" @cancel="cancelCommodityAddModal">-->
+<!--            <div>-->
+<!--                <a-table  :columns="commodityAddModal.columns" :dataSource="commodityAddModal.data" :pagination="commodityAddModal.pagination"></a-table>-->
+<!--            </div>-->
+
+<!--        </a-modal>-->
     </div>
 </template>
 
@@ -72,6 +78,7 @@ import moment from 'moment'
 
 moment.locale('zh-cn')
 import {getOrderByTime, addBookAStayInfo, cancelOrderById} from '@/api/admin/recordApi'
+import {getAllInfo,getCommodityType} from '@/api/admin/commodityApi'
 import Util from '@/util/generalMethod'
 
 export default {
@@ -180,6 +187,55 @@ export default {
                 order_id: '',
                 visible: false,
                 occupants: [{name: '', cardId: '', type: '0'}],
+            },
+            commodityAddModal:{
+                visible:false,
+                order_id:'',
+                commodity:[{commodity_id:'',commodity_count:1}],
+                data:[],  //商品列表
+                commoditySelection:[],
+                columns:[
+                    {
+                    title:'名称',
+                    dataIndex:'name',
+                    align:'center',
+                },
+                    {
+                        title: '商品种类',
+                        align: 'center',
+                        dataIndex: 'type',
+                        scopedSlots: {customRender: 'type'}
+                    },
+                    {
+                        title: '商品价格',
+                        align: 'center',
+                        dataIndex: 'price',
+                        scopedSlots: {customRender: 'price'}
+                    },
+                    {
+                        title: '商品数量',
+                        align: 'center',
+                        dataIndex: 'amount'
+                    },
+                    {
+                        title: '商品图片',
+                        align: 'center',
+                        dataIndex: 'commodity_url',
+                        scopedSlots: {customRender: 'url'}
+                    },
+                    {
+                        title: '商品介绍',
+                        align: 'center',
+                        dataIndex: 'commodity_introduction'
+                    },
+                ],
+                pagination: {
+                    total: 0,
+                    pageSize: 6,//每页中显示10条数据
+                    //showSizeChanger: true,
+                    // pageSizeOptions: ["10", "20", "50", "100"],//每页中显示的数据
+                    showTotal: total => `共有 ${total} 条数据`,  //分页中显示总的数据
+                },
             }
 
         }
@@ -288,6 +344,33 @@ export default {
                 } else
                     me.$message.error("取消失败")
             })
+        },
+        /**
+         * 打开商品对话框
+         */
+        openCommodityAddModal(id){
+            let me=this
+            this.commodityAddModal.order_id=id
+            me.commodityAddModal.visible=true
+            getAllInfo().then(r=>{
+                if(r.data.length>0){
+                    me.commodityAddModal.data=r.data
+                }
+            })
+
+        },
+        cancelCommodityAddModal(){
+            this.commodityAddModal.visible=false
+        },
+        /**
+         * 跳转到商品添加页面
+         * @param id
+         */
+        goToCommodityAdd(id){
+            this.$router.push({
+                path:`/accommodation/commodityAdd/${id}`
+            })
+
         },
 
         /**
