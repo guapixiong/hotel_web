@@ -97,11 +97,28 @@ export function getAvailableRoomByTime(params){
     })
 }
 
+/**
+ * 插入预定
+ * @param params
+ * @returns {AxiosPromise}
+ */
 export function insertReservation(params){
     return request({
         url:'/room/insertReservation',
         method:'post',
         data:params
+    })
+}
+
+/**
+ * 获取房间信息通过订单id
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function getRoomInfoByRecordId(params){
+    return request({
+        url:'/room/getRoomInfoByRecordId',
+        params:params
     })
 }
 

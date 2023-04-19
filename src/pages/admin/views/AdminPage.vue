@@ -48,7 +48,8 @@
                         @click="collapsed=!collapsed"
                     />
                 </a-layout-header>
-                <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff' }">
+                <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#ffff' }">
+<!--                    <a @click="goBack"><a-icon type="double-left" />返回</a>-->
                     <router-view></router-view>
                 </a-layout-content>
             </a-layout>
@@ -71,6 +72,11 @@ export default {
     },
     mounted() {
         this.$router.push('/frontPage')
+    },
+    methods:{
+        goBack(){
+            this.$router.go(-1)
+        }
     }
 }
 </script>

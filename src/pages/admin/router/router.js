@@ -21,6 +21,18 @@ const routes = [
         component:()=>import('@/pages/admin/components/accommodation/CommodityAdd')
     },
     {
+        path:'/accommodation/orderDetails/:id',
+        component:()=>import('@/pages/admin/components/accommodation/OrderDetails')
+    },
+    {
+        path:'/accommodation/checkoutPage/:id',
+        component:()=>import('@/pages/admin/components/accommodation/CheckoutPage')
+    },
+    {
+        path:'/accommodation/checkIn/:id',
+        component:()=>import('@/pages/admin/components/accommodation/CheckIn')
+    },
+    {
         path: '/recordPage',
         component: () => import('@/pages/admin/components/RecordPage.vue'),
     },

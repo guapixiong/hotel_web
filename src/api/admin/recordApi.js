@@ -38,9 +38,38 @@ export function addBookAStayInfo(params){
     })
 }
 
+/**
+ * 取消订单
+ * @param params
+ * @returns {AxiosPromise}
+ */
 export function cancelOrderById(params){
     return request({
         url:'/orderRecord/cancelOrderById',
+        params:params
+    })
+}
+
+/**
+ * 获取订单详情所需信息（包括房间信息，用户信息）
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function getOrderDetailById(params){
+    return request({
+        url:'/orderRecord/getOrderDetailById',
+        params:params
+    })
+}
+
+/**
+ * 通过订单id来获取相关商品信息
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function getCommodityRecordByOrderId(params){
+    return request({
+        url:'/orderRecord/getCommodityRecordByOrderId',
         params:params
     })
 }

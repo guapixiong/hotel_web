@@ -33,7 +33,7 @@
                     </a-select>
                 </a-form-item>
                 <a-form-model-item label="房间选择" :label-col="{span:2}" :wrapper-col="{span:20}" prop="roomId">
-                    <a-select v-model="checkInInfo.roomId" option-label-prop="label" placeholder="请选择房间">
+                    <a-select @change="selectRoom" option-label-prop="label" placeholder="请选择房间">
                         <a-select-option v-for="item in roomData" :key="item.room_id" :value="item.room_id"
                                          :label="item.room_number">
                             <a-card>
@@ -57,6 +57,13 @@
                             </a-card>
                         </a-select-option>
                     </a-select>
+                </a-form-model-item>
+                <a-form-model-item label="房间费用">
+                    {{ calculateRoomFee }}   已付<a-input-number v-model="checkInInfo.actuallyPaid" placeholder="已付金额"></a-input-number>
+                </a-form-model-item>
+
+                <a-form-model-item label="房间押金">
+                    <a-input-number v-model="checkInInfo.deposit"></a-input-number>
                 </a-form-model-item>
                 <a-form-model-item label="身份登记">
                     <div v-for="(item,index) in checkInInfo.occupants" :key="index">
@@ -101,12 +108,26 @@ export default {
                 roomNature: '0',
                 roomId:'',
                 timeFormat: 'YYYY-MM-DD HH:mm',
+                deposit:0.0,
+                actuallyPaid:0.0,
                 timePicker: [moment('2023-03-15 14:00'), moment('2023-03-16 12:00')],
                 occupants:[{name:'',cardId:'',type:'0'}],
             },
             roomData: [],//通过选定日期来查询是否有空余的房间
             roomDataCopy: [],
+            roomFee:0.0,
         }
+    },
+    computed:{
+      calculateRoomFee(){
+          let me=this
+          if(me.checkInInfo.roomNature==='0')
+              return Math.round(me.checkInInfo.timePicker[1].diff(me.checkInInfo.timePicker[0],"days",true))*me.roomFee
+          else
+              return me.roomFee
+
+      }
+
     },
     mounted() {
         this.getData()
@@ -142,7 +163,7 @@ export default {
                 start: me.checkInInfo.timePicker[0].format('YYYY-MM-DD HH:mm'),
                 end: me.checkInInfo.timePicker[1].format('YYYY-MM-DD HH:mm')
             }
-            console.log(params)
+            //console.log(params)
             getAvailableRoomByTime(params).then(response => {
                 if (response.status === 200 && response.data.length > 0) {
                     me.roomData = response.data
@@ -169,6 +190,20 @@ export default {
             this.checkInInfo.occupants.pop()
         },
         /**
+         * 选中房间时的回调
+         * @param value
+         */
+        selectRoom(value){
+            let me=this
+            me.checkInInfo.roomId=value
+            //
+            let index=me.roomData.findIndex((e => e.room_id===value))
+            if(me.checkInInfo.roomNature==='0')
+                me.roomFee=me.roomData[index].room_price
+            else
+                me.roomFee=me.roomData[index].hour_price
+        },
+        /**
          * 提交入住信息
          */
         submitInfo(){
@@ -179,6 +214,8 @@ export default {
                 customer_phone:me.checkInInfo.phone,
                 room_id:me.checkInInfo.roomId,
                 room_type: me.checkInInfo.roomNature,
+                deposit:me.checkInInfo.deposit,
+                actuallyPaid: me.checkInInfo.actuallyPaid,
                 check_in_time: me.checkInInfo.timePicker[0].format('YYYY-MM-DD HH:mm'),
                 check_out_time: me.checkInInfo.timePicker[1].format('YYYY-MM-DD HH:mm'),
                 occupants:me.checkInInfo.occupants

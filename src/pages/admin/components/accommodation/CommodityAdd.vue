@@ -5,6 +5,7 @@
 -->
 <template>
     <div>
+        <a style="color: #C081FF" @click="goBack"><a-icon type="double-left" />返回</a>
         <a-table style="margin: 20px;border-radius: 5px" :columns="columns" :data-source="data" :scroll="{  y: 300 }"
                  :rowKey="(record)=>record.commodity_id">
             <span slot="type" slot-scope="text,record"><a-tag :color="colorList[record.category_id]">{{ text }}</a-tag></span>
@@ -38,6 +39,7 @@
                 </template>
             </a-table>
             <a-button type="primary" @click="submitRecord">提交</a-button>
+
 <!--            <a-modal title="添加商品" @cancel="cancelEditCommodity" :visible="commodityModal.visible" @ok="okEditCommodity">-->
 <!--                <a-form-model>-->
 <!--                    <a-form-item label="名称">{{commodityModal.form.name}}</a-form-item>-->
@@ -251,6 +253,9 @@ export default {
                 else
                     me.$message.error("添加失败")
             })
+        },
+        goBack(){
+            this.$router.go(-1)
         }
 
     },

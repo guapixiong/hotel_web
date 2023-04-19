@@ -20,7 +20,7 @@ export default {
     },
     methods:{
         goToHome(){
-            this.$router.push('/goToHome')
+            window.location.href='/admin'
 
         },
         goToSignUp(){

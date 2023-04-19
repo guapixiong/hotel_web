@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-card style="height: 150px;margin: 20px;border-radius: 5px">
+        <a-card style="height: 100px;margin: 20px;border-radius: 5px">
             <a-form layout="inline">
                 <a-form-item label="时间">
                     <a-range-picker :format="timeFormat" v-model="time"/>
@@ -22,11 +22,6 @@
                     <a-input-search v-model="name" allowClear @change="nameChange"></a-input-search>
                 </a-form-item>
             </a-form>
-            <a-form layout="inline">
-                <a-form-item label="入住操作">
-                    <a-button type="primary" @click="goToCheckIn">快速入住</a-button>
-                </a-form-item>
-            </a-form>
         </a-card>
         <a-table style="margin: 20px;border-radius: 5px" :columns="table1.columns" :dataSource="table1.data"
                  :rowKey="(record)=>record.order_id"
@@ -37,7 +32,7 @@
             <span slot="money" slot-scope="text">¥{{ text }}</span>
             <span slot="action" slot-scope="record">
                 <a-button v-show="record.order_status==='1'" type="primary"
-                          @click="openIdentityRegistrationModal(record.order_id)">入住</a-button>
+                          @click="goToCheckin(record.order_id)">入住</a-button>
                 <a-popconfirm title="确定要取消吗?" ok-text="确定" cancel-text="取消" @confirm="cancelOrder(record.order_id)">
                     <a-button style="margin-left: 5px" v-show="record.order_status==='1'"
                            click="#">取消预约</a-button>
@@ -45,10 +40,10 @@
                 <a-button v-show="record.order_status==='2'" type="primary"
                           @click="billPlease(record.order_id)">结账</a-button>
                 <a-button v-show="record.order_status==='2'" style="margin-left: 5px" @click="goToCommodityAdd(record.order_id)">添加商品</a-button>
-                <a-button style="margin-left: 5px">详情</a-button>
+                <a-button style="margin-left: 5px" @click="orderDetails(record.order_id)">详情</a-button>
             </span>
         </a-table>
-        <a-modal title="身份登记" :visible="identityRegistrationModal.visible" @cancel="cancelIdentityRegistrationModal"
+        <a-modal title="入住登记" :visible="identityRegistrationModal.visible" @cancel="cancelIdentityRegistrationModal"
                  @ok="destineCheckIn">
             <div v-for="(item,index) in identityRegistrationModal.occupants" :key="index">
                 <a-card style="margin-top: 2px">
@@ -64,12 +59,6 @@
             <a-button type="primary" @click="addOccupant">添加</a-button>
             <a-button type="danger" style="margin-left: 20px" @click="deleteOccupant">删除</a-button>
         </a-modal>
-<!--        <a-modal style="width: 1500px;height: 600px" title="餐饮添加" :visible="commodityAddModal.visible" @cancel="cancelCommodityAddModal">-->
-<!--            <div>-->
-<!--                <a-table  :columns="commodityAddModal.columns" :dataSource="commodityAddModal.data" :pagination="commodityAddModal.pagination"></a-table>-->
-<!--            </div>-->
-
-<!--        </a-modal>-->
     </div>
 </template>
 
@@ -185,6 +174,8 @@ export default {
             },
             identityRegistrationModal: {
                 order_id: '',
+                roomFee:'',
+                deposit:'',
                 visible: false,
                 occupants: [{name: '', cardId: '', type: '0'}],
             },
@@ -297,7 +288,7 @@ export default {
             } else
                 this.table1.data = this.table1.dataCopy
         },
-        goToCheckIn() {
+        goToFastCheckIn() {
             this.$router.push({path: '/accommodation/fastCheckIn'});
         },
         /**
@@ -363,6 +354,15 @@ export default {
             this.commodityAddModal.visible=false
         },
         /**
+         * 跳转到入住界面
+         * @param id
+         */
+        goToCheckin(id){
+            this.$router.push({
+                path:`/accommodation/checkIn/${id}`
+            })
+        },
+        /**
          * 跳转到商品添加页面
          * @param id
          */
@@ -370,20 +370,24 @@ export default {
             this.$router.push({
                 path:`/accommodation/commodityAdd/${id}`
             })
-
         },
 
         /**
          * 结账
          */
         billPlease(id) {
+            this.$router.push({
+                path:`/accommodation/checkoutPage/${id}`
+            })
 
         },
         /**
-         * 消费明细
+         * 订单详情
          */
-        consumerDetails() {
-
+        orderDetails(id){
+            this.$router.push({
+                path:`/accommodation/orderDetails/${id}`
+            })
         }
     }
 }
