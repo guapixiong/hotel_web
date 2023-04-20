@@ -31,7 +31,7 @@ export default {
     data(){
         return{
             timeFormat: 'YYYY-MM-DD',
-            time:[moment('2023-03-01'),moment('2023-04-30')],
+            time:[moment(moment().format('YYYY-MM-01')).add(-1,'M'), moment(moment().format('YYYY-MM-01')).add(1,'M')],
             table1:{
                 loading:false,
                 columns:[

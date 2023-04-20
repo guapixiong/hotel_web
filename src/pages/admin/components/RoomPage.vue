@@ -191,7 +191,7 @@ export default {
                 dataCopy: [],
                 pagination: {
                     total: 0,
-                    pageSize: 10,//每页中显示10条数据
+                    pageSize: 7,//每页中显示10条数据
                     //showSizeChanger: true,
                     // pageSizeOptions: ["10", "20", "50", "100"],//每页中显示的数据
                     showTotal: total => `共有 ${total} 条数据`,  //分页中显示总的数据
@@ -374,6 +374,10 @@ export default {
             me.room1.form.hourPrice = record.hour_price
             me.room1.form.roomIntroduction = record.room_introduction
             me.room1.form.roomState = record.room_state
+            me.imageStatus1= {
+                file: {},
+                fileList: []
+            }
             //console.log(record)
         },
         /**
@@ -420,6 +424,10 @@ export default {
         addRoomModal() {
             let me = this
             me.room.visible = true
+            me.imageStatus= {
+                file: {},
+                fileList: []
+            }
         },
         /**
          * 取消新增对话框

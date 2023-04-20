@@ -9,3 +9,9 @@ export function getAllUser(){
         url:'/customer/getAllUser'
     })
 }
+export function getOccupantByTime(params){
+    return request({
+        url:'/customer/getOccupantByTime',
+        params:params
+    })
+}

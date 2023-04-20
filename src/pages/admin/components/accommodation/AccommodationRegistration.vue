@@ -37,10 +37,13 @@
                     <a-button style="margin-left: 5px" v-show="record.order_status==='1'"
                            click="#">取消预约</a-button>
                 </a-popconfirm>
-                <a-button v-show="record.order_status==='2'" type="primary"
+
+                <a-button style="margin-left: 5px" v-show="record.order_status==='2'" type="primary"
                           @click="billPlease(record.order_id)">结账</a-button>
-                <a-button v-show="record.order_status==='2'" style="margin-left: 5px" @click="goToCommodityAdd(record.order_id)">添加商品</a-button>
+                <a-button  v-show="record.order_status==='2'" style="margin-left: 5px" @click="goToCommodityAdd(record.order_id)">添加商品</a-button>
                 <a-button style="margin-left: 5px" @click="orderDetails(record.order_id)">详情</a-button>
+                <a-button style="margin-left: 5px" v-show="record.order_status==='2'"
+                          @click="reimburse(record.order_id)" type="danger">退款</a-button>
             </span>
         </a-table>
         <a-modal title="入住登记" :visible="identityRegistrationModal.visible" @cancel="cancelIdentityRegistrationModal"
@@ -75,7 +78,7 @@ export default {
     data() {
         return {
             timeFormat: 'YYYY-MM-DD',
-            time: [moment('2023-03-01'), moment('2023-04-30')],
+            time: [moment(moment().format('YYYY-MM-01')).add(-1,'M'), moment(moment().format('YYYY-MM-01')).add(1,'M')],
             selectStatus: 'all',
             statusList: [{id: '-1', value: '已退款'}, {id: '0', value: '已取消'}, {id: '1', value: '已预定'}, {
                 id: '2',
@@ -387,6 +390,14 @@ export default {
         orderDetails(id){
             this.$router.push({
                 path:`/accommodation/orderDetails/${id}`
+            })
+        },
+        /**
+         * 退款界面
+         */
+        reimburse(id){
+            this.$router.push({
+                path:`/accommodation/reimburse/${id}`
             })
         }
     }

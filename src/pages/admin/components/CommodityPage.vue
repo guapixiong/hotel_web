@@ -74,9 +74,12 @@
                     <a-input v-model="commodity1.form.name"></a-input>
                 </a-form-model-item>
                 <a-form-model-item label="商品价格">
-                    <a-input v-model="commodity1.form.price">
-                        <a-input-number v-model="commodity1.form.price"></a-input-number>
-                    </a-input>
+                    <a-input-number v-model="commodity1.form.price">
+                    </a-input-number>
+                </a-form-model-item>
+                <a-form-model-item label="商品数量">
+                    <a-input-number v-model="commodity1.form.amount">
+                    </a-input-number>
                 </a-form-model-item>
                 <a-form-model-item label="商品图片">
                     <img :src="commodity1.form.commodity_url" style="height: 100px;width: 150px">

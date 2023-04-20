@@ -84,7 +84,7 @@ export default {
                 roomId:'',
                 roomNature:'0',
                 timeFormat:'YYYY-MM-DD HH:mm',
-                timePicker:[moment('2023-03-15 14:00'),moment('2023-03-16 12:00')],
+                timePicker:[moment(moment().format('YYYY-MM-DD 14:00')),moment(moment().format('YYYY-MM-DD 14:00')).add(1,'d').add(-2,'h')],
 
             },
 
@@ -109,11 +109,11 @@ export default {
          */
         natureChange(){
             if(this.destineInfo.roomNature === '0'){
-                this.destineInfo.timePicker=[moment('2023-03-15 14:00'),moment('2023-03-16 12:00')]
+                this.destineInfo.timePicker=[moment(moment().format('YYYY-MM-DD 14:00')),moment(moment().format('YYYY-MM-DD 14:00')).add(1,'d').add(-2,'h')]
                 this.showTime=false
             }
             else {
-                this.destineInfo.timePicker=[moment('2023-03-15 10:00'),moment('2023-03-15 13:00')]
+                this.destineInfo.timePicker=[moment(),moment().add(3,'h')]
                 this.showTime=true
             }
         },
@@ -183,7 +183,7 @@ export default {
                     roomId:'',
                     roomNature:'0',
                     timeFormat:'YYYY-MM-DD HH:mm',
-                    timePicker:[moment('2023-03-15 14:00'),moment('2023-03-16 12:00')],
+                    timePicker:[moment(moment().format('YYYY-MM-DD 14:00')),moment(moment().format('YYYY-MM-DD 14:00')).add(1,'d').add(-2,'h')]
             }
         },
 

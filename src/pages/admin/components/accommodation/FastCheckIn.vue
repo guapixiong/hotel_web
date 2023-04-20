@@ -6,14 +6,14 @@
 <template>
     <div>
         <a-card style="margin: 20px;border-radius: 5px">
-            <a-form-model :label-col="{span:5}" :wrapper-col="{span:12}">
-                <a-form-model-item label="姓名" >
+            <a-form-model ref="ruleForm" :rules="rules" :label-col="{span:5}" :wrapper-col="{span:12}" :model="checkInInfo">
+                <a-form-model-item label="姓名" prop="name">
                     <a-input style="width: 200px" v-model="checkInInfo.name"></a-input>
                 </a-form-model-item>
-                <a-form-model-item label="电话" >
+                <a-form-model-item label="电话" prop="phone">
                     <a-input style="width: 200px" v-model="checkInInfo.phone"></a-input>
                 </a-form-model-item>
-                <a-form-model-item label="房间性质" prop="roomNature">
+                <a-form-model-item label="房间性质" prop="roomNature" >
                     <a-select style="width: 200px" v-model="checkInInfo.roomNature" @change="natureChange">
                         <a-select-option key="0" value="0">标准房</a-select-option>
                         <a-select-option key="1" value="1">钟点房</a-select-option>
@@ -58,11 +58,11 @@
                         </a-select-option>
                     </a-select>
                 </a-form-model-item>
-                <a-form-model-item label="房间费用">
-                    {{ calculateRoomFee }}   已付<a-input-number v-model="checkInInfo.actuallyPaid" placeholder="已付金额"></a-input-number>
+                <a-form-model-item label="房间费用" prop="actuallyPaid">
+                    ¥{{ calculateRoomFee }}   已付<a-input-number  v-model="checkInInfo.actuallyPaid" placeholder="已付金额"></a-input-number>
                 </a-form-model-item>
 
-                <a-form-model-item label="房间押金">
+                <a-form-model-item label="房间押金" prop="deposit">
                     <a-input-number v-model="checkInInfo.deposit"></a-input-number>
                 </a-form-model-item>
                 <a-form-model-item label="身份登记">
@@ -102,6 +102,15 @@ export default {
             timeFormat: 'YYYY-MM-DD',
             time: [moment('2023-03-15'), moment('2023-04-15')],
             roomType: [],
+            rules:{
+                name:[{required: true,message:'请输入姓名'}],
+                phone:[{required:true ,message:'请输入电话'}],
+                roomNature: [{required:true,trigger:'change'}],
+                timePicker:[{required:true}],
+                roomId:[{required:true,message:'请选择房间'}],
+                deposit:[{required:true,message:'请输入押金'}],
+                actuallyPaid:[{required:true,message:'请输入付款金额'}]
+            },
             checkInInfo: { //快速入住信息
                 name: '',
                 phone: '',
@@ -110,7 +119,7 @@ export default {
                 timeFormat: 'YYYY-MM-DD HH:mm',
                 deposit:0.0,
                 actuallyPaid:0.0,
-                timePicker: [moment('2023-03-15 14:00'), moment('2023-03-16 12:00')],
+                timePicker: [moment(moment().format('YYYY-MM-DD 14:00')),moment(moment().format('YYYY-MM-DD 14:00')).add(1,'d').add(-2,'h')],
                 occupants:[{name:'',cardId:'',type:'0'}],
             },
             roomData: [],//通过选定日期来查询是否有空余的房间
@@ -147,10 +156,10 @@ export default {
          */
         natureChange() {
             if (this.checkInInfo.roomNature === '0') {
-                this.checkInInfo.timePicker = [moment('2023-03-15 14:00'), moment('2023-03-16 12:00')]
+                this.checkInInfo.timePicker = [moment(moment().format('YYYY-MM-DD 14:00')),moment(moment().format('YYYY-MM-DD 14:00')).add(1,'d').add(-2,'h')]
                 this.showTime = false
             } else {
-                this.checkInInfo.timePicker = [moment('2023-03-15 10:00'), moment('2023-03-15 13:00')]
+                this.checkInInfo.timePicker = [moment(),moment().add(3,'h')]
                 this.showTime = true
             }
         },
@@ -207,26 +216,34 @@ export default {
          * 提交入住信息
          */
         submitInfo(){
-            console.log(this.checkInInfo)
+            //console.log(this.checkInInfo)
             let me=this
-            let params={
-                customer_name:me.checkInInfo.name,
-                customer_phone:me.checkInInfo.phone,
-                room_id:me.checkInInfo.roomId,
-                room_type: me.checkInInfo.roomNature,
-                deposit:me.checkInInfo.deposit,
-                actuallyPaid: me.checkInInfo.actuallyPaid,
-                check_in_time: me.checkInInfo.timePicker[0].format('YYYY-MM-DD HH:mm'),
-                check_out_time: me.checkInInfo.timePicker[1].format('YYYY-MM-DD HH:mm'),
-                occupants:me.checkInInfo.occupants
-            }
-            addFastCheckIn(params).then(r=>{
-                if(r.data===1){
-                    me.$message.success("入住成功")
+            this.$refs.ruleForm.validate(valid => {
+                if (valid) {
+                    let params={
+                        customer_name:me.checkInInfo.name,
+                        customer_phone:me.checkInInfo.phone,
+                        room_id:me.checkInInfo.roomId,
+                        room_type: me.checkInInfo.roomNature,
+                        deposit:me.checkInInfo.deposit,
+                        actuallyPaid: me.checkInInfo.actuallyPaid,
+                        check_in_time: me.checkInInfo.timePicker[0].format('YYYY-MM-DD HH:mm'),
+                        check_out_time: me.checkInInfo.timePicker[1].format('YYYY-MM-DD HH:mm'),
+                        occupants:me.checkInInfo.occupants
+                    }
+                    addFastCheckIn(params).then(r=>{
+                        if(r.data===1){
+                            me.$message.success("入住成功")
+                        }
+                        else
+                            me.$message.error("入住失败")
+                    })
                 }
-                else
-                    me.$message.error("入住失败")
+                else {
+                    return false;
+                }
             })
+
         }
     }
 }

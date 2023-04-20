@@ -5,17 +5,25 @@
 -->
 <template>
     <div>
-        <a style="color: #C081FF" @click="goBack"><a-icon type="double-left" />返回</a>
+        <a style="color: #C081FF" @click="goBack">
+            <a-icon type="double-left"/>
+            返回</a>
+        <span style="margin-left: 30px">实收(折旧费):¥<a-input-number min="1" v-model="actualCharge"></a-input-number></span>
+        <a-button style="margin-left: 30px;width: 200px" type="primary" @click="refundOperation">退款</a-button>
         <a-card style="height: 255px;margin: 20px;border-radius: 5px">
             <p>订单信息</p>
             <div style="margin-left: 20px">
                 <a-form layout="inline">
                     <a-row :gutter="24">
                         <a-col :span="12">
-                            <a-form-item label="订单编号" >{{details.order_id}}</a-form-item>
+                            <a-form-item label="订单编号">{{ details.order_id }}</a-form-item>
                         </a-col>
                         <a-col :span="12">
-                            <a-form-item label="订单状态"><a-tag :color="status1[details.order_status][1]" >{{status1[details.order_status][0]}}</a-tag></a-form-item>
+                            <a-form-item label="订单状态">
+                                <a-tag :color="status1[details.order_status][1]">
+                                    {{ status1[details.order_status][0] }}
+                                </a-tag>
+                            </a-form-item>
                         </a-col>
                     </a-row>
                     <a-row :gutter="24">
@@ -60,7 +68,7 @@
                     </a-row>
                     <a-row :gutter="24">
                         <a-col :span="12">
-                            <a-form-item label="住房类型">{{ details.room_type !=='1' ? '标准房':'钟点房'}}</a-form-item>
+                            <a-form-item label="住房类型">{{ details.room_type !== '1' ? '标准房' : '钟点房' }}</a-form-item>
                         </a-col>
                         <a-col :span="12">
                             <a-form-item label="房间价格">¥{{ details.room_price }}</a-form-item>
@@ -76,7 +84,8 @@
                     </a-row>
                     <a-row :gutter="24">
                         <a-col :span="12">
-                            <a-form-item label="房间图片"><img style="width: 100px;height: 50px" :src="details.room_url"></a-form-item>
+                            <a-form-item label="房间图片"><img style="width: 100px;height: 50px" :src="details.room_url">
+                            </a-form-item>
                         </a-col>
                         <a-col :span="12">
                             <a-form-item label="房间介绍">{{ details.room_introduction }}</a-form-item>
@@ -87,7 +96,7 @@
         </a-card>
         <a-card style="height: 350px;margin: 20px;border-radius: 5px">
             <p>顾客信息</p>
-            <div style="margin-left: 20px" >
+            <div style="margin-left: 20px">
                 <a-form layout="inline">
                     <a-row :gutter="24">
                         <a-col :span="12">
@@ -98,7 +107,7 @@
                         </a-col>
                     </a-row>
                 </a-form>
-                <a-table  :columns="columns1" :dataSource="occupantData" :rowKey="(record)=>record.id" :scroll="{  y: 150 }">
+                <a-table :columns="columns1" :dataSource="occupantData" :rowKey="(record)=>record.id" :scroll="{  y: 150 }">
                     <span slot="type" slot-scope="text">{{type[text]}}</span>
                 </a-table>
             </div>
@@ -106,7 +115,8 @@
         <a-card style="height: 300px;margin: 20px;border-radius: 5px">
             <p>商品信息</p>
             <div style="margin-left: 20px">
-                <a-table  :columns="columns" :dataSource="commodityData" :rowKey="(record,index)=>index" :scroll="{  y: 150 }">
+                <a-table :columns="columns" :dataSource="commodityData" :rowKey="(record,index)=>index"
+                         :scroll="{  y: 150 }">
                     <span slot="price" slot-scope="text">¥{{text}}</span>
                     <span slot="money" slot-scope="text">¥{{text}}</span>
                 </a-table>
@@ -116,48 +126,54 @@
 </template>
 
 <script>
-import {getCommodityRecordByOrderId, getOrderDetailById,getCustomerByRecordId} from "@/api/admin/recordApi";
+import {
+    getCommodityRecordByOrderId,
+    getCustomerByRecordId,
+    getOrderDetailById,
+    reimburseOrder
+} from "@/api/admin/recordApi";
 import moment from "moment";
+
 moment.locale('zh-cn')
 export default {
-    name: "OrderDetails",
-    data(){
-        return{
-            orderId:'',
-            details:{
-                order_id:'',
-                order_status:'0',
-                check_in_time:'',
-                check_out_time:'',
-                create_time:'',
-                complete_time:'',
-                final_payment_amount:0.0,
-                room_number:'',
-                type:'',
-                room_type:'',
-                room_price:'',
-                hour_price:'',
-                deposit:0.0,
-                room_url:'',
-                room_introduction:'',
-                customer_name:'',
-                customer_phone:'',
+    name: "ReimbursePage",
+    data() {
+        return {
+            orderId: '',
+            details: {
+                order_id: '',
+                order_status: '0',
+                check_in_time: '',
+                check_out_time: '',
+                create_time: '',
+                complete_time: '',
+                final_payment_amount: 0.0,
+                room_number: '',
+                type: '',
+                room_type: '',
+                room_price: '',
+                hour_price: '',
+                deposit: 0.0,
+                room_url: '',
+                room_introduction: '',
+                customer_name: '',
+                customer_phone: '',
             },
-            roomFee:0.0,
+            roomFee: 0.0,
             status1: {
-                '-1':['已退款','red'],
-                '0':['已取消','grey'],
-                '1':['已预定','purple'],
-                '2':['待结账','orange'],
-                '3':['已完成','green']
+                '-1': ['已退款', 'red'],
+                '0': ['已取消', 'grey'],
+                '1': ['已预定', 'purple'],
+                '2': ['待结账', 'orange'],
+                '3': ['已完成', 'green']
             },
-            commodityData:[],
-            commodityDataCopy:[],
-            columns:[
+            commodityData: [],
+            commodityDataCopy: [],
+            columns: [
                 {
-                    title:'商品名称',
-                    align:'center',
-                    dataIndex:'name',
+                    title: '商品名称',
+                    align: 'center',
+                    dataIndex: 'name',
                 },
                 {
                     title: '数量',
@@ -187,7 +203,8 @@ export default {
                     scopedSlots: {customRender: 'money'}
                 }
             ],
-            commodityFee:0.0,
+            commodityFee: 0.0,
+            actualCharge: 0.0,
             columns1:[
                 {
                     title:'姓名',
@@ -220,37 +237,37 @@ export default {
             type:["居民身份证","临时身份证","港澳台身份证"]
         }
     },
-    computed:{
-      getTotalAmount(){
-          return this.roomFee+this.commodityFee
+    computed: {
+        getTotalAmount() {
+            return this.roomFee + this.commodityFee
         }
     },
     mounted() {
-        this.orderId=this.$route.params.id
+        this.orderId = this.$route.params.id
         this.getData()
     },
-    methods:{
+    methods: {
         /**
          * 通过订单编号来获取订单详细信息
          */
-        getData(){
-            let me=this
-            getOrderDetailById({orderId:me.orderId}).then(r=>{
-                if(Object.keys(r.data).length>0){
-                    me.details=r.data
+        getData() {
+            let me = this
+            getOrderDetailById({orderId: me.orderId}).then(r => {
+                if (Object.keys(r.data).length > 0) {
+                    me.details = r.data
                 }
-                if(r.data.room_type=='0'){
-                    me.roomFee=Math.round(moment(r.data.check_out_time).diff(moment(r.data.check_in_time),"days",true))*r.data.room_price
-                }else
-                    me.roomFee=r.data.hour_price
+                if (r.data.room_type == '0') {
+                    me.roomFee = Math.round(moment(r.data.check_out_time).diff(moment(r.data.check_in_time), "days", true)) * r.data.room_price
+                } else
+                    me.roomFee = r.data.hour_price
 
                 //console.log(r.data)
             })
-            getCommodityRecordByOrderId({orderId:me.orderId}).then(r=>{
-                if(r.data.length>0){
-                    me.commodityData=r.data
-                    me.commodityData.forEach(e=>{
-                        me.commodityFee+=e.money
+            getCommodityRecordByOrderId({orderId: me.orderId}).then(r => {
+                if (r.data.length > 0) {
+                    me.commodityData = r.data
+                    me.commodityData.forEach(e => {
+                        me.commodityFee += e.money
                     })
                 }
                 //console.log(r.data)
@@ -260,12 +277,26 @@ export default {
                     me.occupantData=r.data
                 }
             })
+        },
+        refundOperation() {
+            let me = this
+            let params={
+                orderId:me.orderId,
+                actualCharge:this.actualCharge
+            }
 
+            reimburseOrder(params).then(r=>{
+                if(r.status===200&&r.data===1){
+                    me.$message.success("退款成功")
+                }
+                else
+                    me.$message.error("退款失败")
+            })
         },
         /**
          * 返回
          */
-        goBack(){
+        goBack() {
             this.$router.go(-1)
         }
     }

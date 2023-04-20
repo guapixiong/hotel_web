@@ -74,4 +74,35 @@ export function getCommodityRecordByOrderId(params){
     })
 }
 
+/**
+ * 结账退房操作
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function checkoutByOrderId(params){
+    return request({
+        url:'/orderRecord/checkoutByOrderId',
+        method:'post',
+        data:params
+    })
+}
+
+/**
+ * 退款操作
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function reimburseOrder(params){
+    return request({
+        url:'/orderRecord/reimburseOrder',
+        params:params
+    })
+}
+export function getCustomerByRecordId(params){
+    return request({
+        url:'/orderRecord/getCustomerByRecordId',
+        params:params
+    })
+}
+
 

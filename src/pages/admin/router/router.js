@@ -33,8 +33,17 @@ const routes = [
         component:()=>import('@/pages/admin/components/accommodation/CheckIn')
     },
     {
+        path:'/accommodation/reimburse/:id',
+        component:()=>import('@/pages/admin/components/accommodation/ReimbursePage')
+    },
+    {
         path: '/recordPage',
         component: () => import('@/pages/admin/components/RecordPage.vue'),
+    },
+    {
+        path:'/occupant',
+        component:()=>import('@/pages/admin/components/OccupantPage')
+
     },
     {
         path: '/roomPage',
@@ -44,6 +53,7 @@ const routes = [
         path: '/commodityPage',
         component: ()=>import('@/pages/admin/components/CommodityPage'),
     },
+
     {
         path: '/userPage',
         component: ()=>import('@/pages/admin/components/UserPage'),
