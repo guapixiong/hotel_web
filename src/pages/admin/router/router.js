@@ -3,6 +3,7 @@ const routes = [
     {
         path: '/frontPage',
         component: () => import('@/pages/admin/components/FrontPage.vue'),
+
     },
     {
       path:'/accommodation/register',

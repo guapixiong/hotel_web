@@ -13,19 +13,25 @@
                 <a-form-item>
                     <a-button type="primary" @click="loadTable1">查询</a-button>
                 </a-form-item>
+                <a-form-item label="身份证号查询">
+                    <a-input-search v-model="cardId" allowClear @change="cardIdChange"></a-input-search>
+                </a-form-item>
+                <a-form-item label="姓名查询">
+                    <a-input-search v-model="name" allowClear @change="nameChange"></a-input-search>
+                </a-form-item>
             </a-form>
         </a-card>
         <a-table style="margin: 20px;border-radius: 5px" :columns="table1.columns" :dataSource="table1.data"
                  :rowKey="(record)=>record.id"
                  :loading="table1.loading" :pagination="table1.pagination" size="small" bordered>
             <span slot="type" slot-scope="text">{{type[text]}}</span>
-            <span slot="operate">
-                <a-button type="primary">编辑</a-button>
+            <span slot="operate" slot-scope="record">
+<!--                <a-button type="primary">编辑</a-button>-->
                 <a-popconfirm
                     title="确定要删除吗?"
                     ok-text="确定"
                     cancel-text="取消"
-                    confirm="#"
+                    @confirm="deleteOccupant(record)"
                 >
                 <a-button style="margin-left: 2px" type="danger" click="#">删除</a-button>
             </a-popconfirm>
@@ -39,7 +45,8 @@
 <script>
 import moment from 'moment'
 import {getOrderByTime} from "@/api/admin/recordApi";
-import {getOccupantByTime} from "@/api/admin/userApi";
+import {deleteOccupantById, getOccupantByTime} from "@/api/admin/userApi";
+import Util from "@/util/generalMethod";
 
 moment.locale('zh-cn')
 export default {
@@ -62,6 +69,11 @@ export default {
                         dataIndex: 'card_id'
                     },
                     {
+                        title: '房间号',
+                        align: 'center',
+                        dataIndex: 'room_number'
+                    },
+                    {
                         title: '身份证类型',
                         align: 'center',
                         dataIndex: 'type',
@@ -70,17 +82,18 @@ export default {
                     {
                         title: '登记时间',
                         align: 'center',
-                        dataIndex: 'register_time'
+                        dataIndex: 'register_time',
+                        sorter:(a,b)=>{ return a.register_time> b.register_time? 1 : -1 }
                     },
                     {
                         title:'离店时间',
                         align: 'center',
-                        dataIndex: 'leave_time'
+                        dataIndex: 'leave_time',
+                        sorter:(a,b)=>{ return a.leave_time> b.leave_time? 1 : -1 }
                     },
                     {
                         title:'操作',
                         align: 'center',
-                        dataIndex: 'operate',
                         scopedSlots: {customRender: 'operate'}
                     }
                 ],
@@ -94,7 +107,9 @@ export default {
                     showTotal: total => `共有 ${total} 条数据`,  //分页中显示总的数据
                 },
             },
-            type:["居民身份证","临时身份证","港澳台身份证"]
+            type:["居民身份证","临时身份证","港澳台身份证"],
+            name:'',
+            cardId:'',
         }
     },
     mounted() {
@@ -120,7 +135,48 @@ export default {
                 //console.log(r.data)
                 me.table1.loading=false
             })
+        },
+        /**
+         * 名称模糊匹配
+         */
+        nameChange() {
+            let me = this
+            if (this.name.length > 0) {
+                this.table1.data = this.table1.dataCopy.filter(e => {
+                    return Util.fuzzyQuery(e.name, me.name)
+                })
+            } else
+                this.table1.data = this.table1.dataCopy
+        },
+        /**
+         * 身份证模糊匹配
+         */
+        cardIdChange() {
+            let me = this
+            if (this.cardId.length > 0) {
+                this.table1.data = this.table1.dataCopy.filter(e => {
+                    return Util.fuzzyQuery(e.card_id, me.cardId)
+                })
+            } else
+                this.table1.data = this.table1.dataCopy
+        },
+        /**
+         * 删除同行人
+         */
+        deleteOccupant(record){
+            let me=this
+            //console.log(record)
+            deleteOccupantById({id:record.id}).then(r=>{
+                if(r.data===1){
+                    me.$message.success("删除成功")
+                }
+                else
+                    me.$message.error("删除失败")
+            })
+
         }
+
+
 
     }
 }

@@ -52,7 +52,7 @@ export function updateCommodity(params){
 }
 
 /**
- * 删除一条商品记录
+ * 删除一个商品
  * @param params
  * @returns {AxiosPromise}
  */
@@ -82,5 +82,11 @@ export function insertCommodityRecords(params){
         url:'/commodity/insertCommodityRecords',
         method:'post',
         data:params
+    })
+}
+export function deleteCommodityRecordById(params){
+    return request({
+        url:'/commodity/deleteCommodityRecordById',
+        params:params
     })
 }

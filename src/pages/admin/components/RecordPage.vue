@@ -32,17 +32,17 @@
             <span slot="action" slot-scope="record">
                 <a-button type="primary"  @click="openEditModal(record)">编辑</a-button>
                 <a-popconfirm
-                    title="确定要删除吗?会删除相关所有记录"
+                    title="确定要删除吗?"
                     ok-text="确定"
                     cancel-text="取消"
-                    confirm="#"
+                    @confirm="deleteOrder(record)"
                 >
-                    <a-button style="margin-left: 2px" type="danger" click="#">删除</a-button>
+                    <a-button style="margin-left: 2px" type="danger" >删除</a-button>
                 </a-popconfirm>
             </span>
 
         </a-table>
-        <a-modal title="订单编辑" :visible="editModalVisible" @cancel="cancelEdit">
+        <a-modal title="订单编辑" :visible="editModalVisible" @cancel="cancelEdit" @ok="submitEdit">
             <a-form>
                 <a-row :gutter="16">
                     <a-col :span="12">
@@ -74,10 +74,10 @@
                 </a-row>
                 <a-row :gutter="16">
                     <a-col :span="12">
-                        <a-form-item label="入住时间"><a-input v-model="orderItem.check_in_time" ></a-input></a-form-item>
+                        <a-form-item label="入住时间"><a-input v-model="orderItem.check_in_time" disabled ></a-input></a-form-item>
                     </a-col>
                     <a-col :span="12">
-                        <a-form-item label="退房时间"><a-input v-model="orderItem.check_out_time" ></a-input></a-form-item>
+                        <a-form-item label="退房时间"><a-input v-model="orderItem.check_out_time" disabled ></a-input></a-form-item>
                     </a-col>
                 </a-row>
                 <a-row :gutter="16">
@@ -85,7 +85,7 @@
                         <a-form-item label="订单创建时间"><a-input v-model="orderItem.create_time" disabled></a-input></a-form-item>
                     </a-col>
                     <a-col :span="12">
-                        <a-form-item label="订单完成时间"><a-input v-model="orderItem.complete_time" ></a-input></a-form-item>
+                        <a-form-item label="订单完成时间"><a-input v-model="orderItem.complete_time" disabled ></a-input></a-form-item>
                     </a-col>
                 </a-row>
 
@@ -97,7 +97,7 @@
 <script>
 import moment from 'moment'
 moment.locale('zh-cn')
-import {getOrderByTime} from '@/api/admin/recordApi'
+import {deleteRecordById, getOrderByTime, updateRecordById} from '@/api/admin/recordApi'
 import Util from "@/util/generalMethod";
 export default {
     name: "RecordPage",
@@ -275,10 +275,39 @@ export default {
             this.editModalVisible=true
         },
         /**
+         * 提交编辑
+         */
+        submitEdit(){
+            let me=this
+            let params={
+                id:this.orderItem.order_id,
+                payment:this.orderItem.final_payment_amount
+            }
+            updateRecordById(params).then(r=>{
+                if(r.data===1){
+                    me.$message.success("修改成功")
+                }
+                else
+                    me.$message.error("修改失败")
+            })
+
+        },
+        /**
          * 取消编辑
          */
         cancelEdit(){
             this.editModalVisible=false
+        },
+        deleteOrder(record){
+            let me=this
+            deleteRecordById({id:record.order_id}).then(r=>{
+                if(r.data===1){
+                    me.$message.success("删除成功")
+                }
+                else
+                    me.$message.error("删除失败")
+            })
+
         }
 
     }

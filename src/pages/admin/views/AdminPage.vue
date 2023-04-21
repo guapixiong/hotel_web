@@ -25,9 +25,9 @@
                     <a-menu-item key="11">
                         <router-link to="/occupant"><a-icon type="carry-out"/><span>入住信息</span></router-link>
                     </a-menu-item>
-<!--                    <a-menu-item key="10">-->
-<!--                        <router-link to="/commodityRecord"><a-icon type="carry-out"/><span>商品记录</span></router-link>-->
-<!--                    </a-menu-item>-->
+                    <a-menu-item key="10">
+                        <router-link to="/commodityRecord"><a-icon type="carry-out"/><span>商品记录</span></router-link>
+                    </a-menu-item>
                     <a-menu-item key="3">
                         <router-link to="/roomPage"><a-icon type="bank"/><span>房间管理</span></router-link>
                     </a-menu-item>
@@ -37,9 +37,9 @@
                     <a-menu-item key="5">
                         <router-link to="/userPage"><a-icon type="user"/><span>用户管理</span></router-link>
                     </a-menu-item>
-                    <a-menu-item key="6">
-                        <router-link to="/operatePage"><a-icon type="control"/><span>操作日志</span></router-link>
-                    </a-menu-item>
+<!--                    <a-menu-item key="6">-->
+<!--                        <router-link to="/operatePage"><a-icon type="control"/><span>操作日志</span></router-link>-->
+<!--                    </a-menu-item>-->
 
                 </a-menu>
             </a-layout-sider>

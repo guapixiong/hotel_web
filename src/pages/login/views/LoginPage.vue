@@ -4,10 +4,11 @@
   @date : 2023-04-17 16:18
 -->
 <template>
-        <div>
-            <div :style="{ margin: '24px 16px', padding: '24px', background: '#fff' }">
-                <router-view></router-view>
-            </div>
+        <div class="box">
+
+                    <router-view></router-view>
+
+
         </div>
 </template>
 
@@ -26,5 +27,12 @@ export default {
 </script>
 
 <style scoped>
+
+.box{
+    width: 1920px;
+    height: 1080px;
+    background-color: #8080FF;
+    padding: 200px;
+}
 
 </style>

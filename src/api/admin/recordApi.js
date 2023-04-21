@@ -98,11 +98,43 @@ export function reimburseOrder(params){
         params:params
     })
 }
+
+/**
+ * 根据订单来获取登记人信息
+ * @param params
+ * @returns {AxiosPromise}
+ */
 export function getCustomerByRecordId(params){
     return request({
         url:'/orderRecord/getCustomerByRecordId',
         params:params
     })
 }
+
+/**
+ * 更新订单
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function updateRecordById(params){
+    return request({
+        url:'/orderRecord/updateRecordById',
+        params:params
+    })
+}
+
+/**
+ * 删除订单
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function deleteRecordById(params){
+    return request({
+        url:'/orderRecord/deleteRecordById',
+        params:params
+    })
+}
+
+
 
 
