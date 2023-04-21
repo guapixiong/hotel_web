@@ -362,7 +362,7 @@ export default {
          */
         goToCheckin(id){
             this.$router.push({
-                path:`/accommodation/checkIn/${id}`
+                path:`/admin/accommodation/checkIn/${id}`
             })
         },
         /**
@@ -371,7 +371,7 @@ export default {
          */
         goToCommodityAdd(id){
             this.$router.push({
-                path:`/accommodation/commodityAdd/${id}`
+                path:`/admin/accommodation/commodityAdd/${id}`
             })
         },
 
@@ -380,7 +380,7 @@ export default {
          */
         billPlease(id) {
             this.$router.push({
-                path:`/accommodation/checkoutPage/${id}`
+                path:`/admin/accommodation/checkoutPage/${id}`
             })
 
         },
@@ -389,7 +389,7 @@ export default {
          */
         orderDetails(id){
             this.$router.push({
-                path:`/accommodation/orderDetails/${id}`
+                path:`/admin/accommodation/orderDetails/${id}`
             })
         },
         /**
@@ -397,7 +397,7 @@ export default {
          */
         reimburse(id){
             this.$router.push({
-                path:`/accommodation/reimburse/${id}`
+                path:`/admin/accommodation/reimburse/${id}`
             })
         }
     }

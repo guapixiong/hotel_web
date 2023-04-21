@@ -20,17 +20,12 @@ module.exports = defineConfig({
     }
   },
   transpileDependencies: true,
-  pages:{
-    //主页面
-    index:{
-      entry: './src/pages/login/login.js',
-      template: './public/index.html',
-      title: '用户登录'
-    },
-    admin:{
-      entry:'./src/pages/admin/admin.js',
-      template:'./public/admin.html',
-      title: '管理员界面'
-    },
-  }
+  // pages:{
+  //   //主页面
+  //   index:{
+  //     entry: './src/pages/admin/admin.js',
+  //     template: './public/index.html',
+  //     title: '管理员界面'
+  //   },
+  // }
 })

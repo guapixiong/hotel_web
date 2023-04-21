@@ -5,10 +5,7 @@
 -->
 <template>
         <div class="box">
-
-                    <router-view></router-view>
-
-
+            <router-view></router-view>
         </div>
 </template>
 
@@ -21,7 +18,7 @@ export default {
         }
     },
     mounted() {
-        this.$router.push('/signIn')
+        this.$router.push('/login/signIn')
     }
 }
 </script>
