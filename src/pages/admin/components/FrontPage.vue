@@ -46,14 +46,22 @@
         </a-card>
         <div style="margin: 20px;">
             <a-row  :gutter="100">
-                <a-col span="6">
-                    <a-card style="width: 400px;height: 320px;border-radius: 5px"></a-card>
+                <a-col span="8">
+                    <a-card style="width: 400px;height: 400px;border-radius: 5px">
+                        <p style="font-weight: bold;font-size: 16px">订单状态占比</p>
+                        <a-range-picker  :format="chart1.timeFormat" v-model="chart1.time" size="small" @change="chart1TimeChange"/>
+                        <div style="width: 350px;height: 280px" id="chart1">
+                        </div>
+                    </a-card>
                 </a-col>
-                <a-col span="6">
-                    <a-card style="width: 400px;height: 320px;border-radius: 5px"></a-card>
-                </a-col>
-                <a-col span="12">
-                    <a-card style="width: auto;height: 320px;border-radius: 5px"></a-card>
+                <a-col span="16">
+                    <a-card style="width: auto;height: 400px;border-radius: 5px">
+                        <p style="font-weight: bold;font-size: 16px">入账记录</p>
+                        <a-range-picker  :format="chart2.timeFormat" v-model="chart2.time" size="small" @change="chart2TimeChange"/>
+                        <div style="height: 280px;width: 800px" id="chart2">
+
+                        </div>
+                    </a-card>
                 </a-col>
             </a-row>
         </div>
@@ -72,6 +80,7 @@ import {getCustomerFlowByTime, getRecordTotal, getRoomTotal, getSalesByTime} fro
 import moment from 'moment'
 moment.locale('zh-cn')
 import Util from "@/util/generalMethod";
+import * as echarts from 'echarts';
 import _ from 'lodash'
 export default {
     name: "FrontPage",
@@ -89,7 +98,17 @@ export default {
             order:{
                 total:0,
                 relatively:0
+            },
+            colorList:['#009DFF','#22E4FF','#4985F0','#04E38A','#9DFF86'],
+            chart1:{
+                timeFormat: 'YYYY-MM-DD',
+                time:[moment(moment().format('YYYY-MM-01')), moment(moment().format('YYYY-MM-01')).add(1,'M')],
+            },
+            chart2:{
+                timeFormat: 'YYYY-MM-DD',
+                time:[moment(moment().format('YYYY-MM-01')), moment(moment().format('YYYY-MM-01')).add(1,'M')],
             }
+
 
 
 
@@ -107,11 +126,11 @@ export default {
                 if(r.status===200)
                     me.totalNumberOfRooms=r.data
             })
-            //let start=moment().add(-1,'days')
-            //let end=moment()
+            let start=moment().add(-1,'days')
+            let end=moment()
             //测试数据
-            let start=moment("2023-04-03 00:01")
-            let end=moment('2023-04-03 23:59')
+            // let start=moment("2023-04-03 00:01")
+            // let end=moment('2023-04-03 23:59')
             let param={
                 start:start.format('yyyy-MM-DD 00:01'),
                 end:end.format('yyyy-MM-DD 23:59')
@@ -164,8 +183,143 @@ export default {
                     me.order.relatively=Util.getPercentValue([old,current],1,0)-Util.getPercentValue([old,current],0,0)
                 }
             })
+            getRecordTotal({
+                start:me.chart1.time[0].format('yyyy-MM-DD'),
+                end:me.chart1.time[1].format('yyyy-MM-DD')
+            }).then(r=>{
+                let data=[{value:0,name:'已退款'},{value:0,name:'已取消'},{value:0,name:'已预定'},{value:0,name:'待结账'},{value:0,name:'已完成'},]
+                if(r.data.length>0){
+                    r.data.forEach(e=>{
+                        data[parseInt(e.order_status)+1].value++
+                    })
+                }
+                me.drawChart1(data)
+            })
+            getSalesByTime({
+                start:me.chart1.time[0].format('yyyy-MM-DD'),
+                end:me.chart1.time[1].format('yyyy-MM-DD')
+            }).then(r=>{
+                if(r.data.length>0){
+                    let processData=_.groupBy(r.data,'time')
+                    let data={columns:[],data:[]}
+                    //console.log(processData)
+                    for(let key in processData){
+                        data.columns.push(key)
+                        let count=0.0
+                        processData[key].forEach(e=>{
+                            count+=e.final_payment_amount
+                        })
+                        data.data.push(count)
+                    }
+                    console.log(data)
+                    me.drawChart2(data)
+                    //console.log(r.data)
+                }
+            })
+        },
+        chart1TimeChange(){
+            let me=this
+            getRecordTotal({
+                start:me.chart1.time[0].format('yyyy-MM-DD'),
+                end:me.chart1.time[1].format('yyyy-MM-DD')
+            }).then(r=>{
+                //console.log(r)
+                let data=[{value:0,name:'已退款'},{value:0,name:'已取消'},{value:0,name:'已预定'},{value:0,name:'待结账'},{value:0,name:'已完成'},]
+                if(r.data.length>0){
+                    r.data.forEach(e=>{
+                        data[parseInt(e.order_status)+1].value++
+                    })
+                }
+                me.drawChart1(data)
+            })
+        },
+        drawChart1( data){
+            let me=this
+            echarts.dispose(document.getElementById('chart1'))
+            let myChart=echarts.init(document.getElementById('chart1'))
+            myChart.showLoading()
+            let option={
+                legend:{
+                    data: ['已退款', '已取消', '已预定', '待结账', '已完成'],
+                    top: '1%',
+                    left: 'center'
+                },
+                tooltip:{
+                    trigger:'item'
+                },
+
+                series:[{
+                    type:'pie',
+                    radius:['40%', '70%'],
+                    data:data,
+                    itemStyle:{
+                        //color:'#009DFF'
+                        color:function (arg){
+                            return me.colorList[arg.dataIndex]
+                        }
+                    },
+                    label:{
+                        formatter:function (arg){
+                            return arg.data.value
+                        }
+                    }
+                }]
+            }
+            myChart.setOption(option)
+            myChart.hideLoading()
 
         },
+        chart2TimeChange(){
+            let me=this
+            getSalesByTime({
+                start:me.chart1.time[0].format('yyyy-MM-DD'),
+                end:me.chart1.time[1].format('yyyy-MM-DD')
+            }).then(r=>{
+                if(r.data.length>0){
+                    let processData=_.groupBy(r.data,'time')
+                    let data={columns:[],data:[]}
+                    //console.log(processData)
+                    for(let key in processData){
+                        data.columns.push(key)
+                        let count=0.0
+                        processData[key].forEach(e=>{
+                            count+=e.final_payment_amount
+                        })
+                        data.data.push(count)
+                    }
+                    console.log(data)
+                    me.drawChart2(data)
+                    //console.log(r.data)
+                }
+            })
+        },
+        drawChart2(data){
+            let me=this
+            echarts.dispose(document.getElementById('chart2'))
+            let myChart=echarts.init(document.getElementById('chart2'))
+            myChart.showLoading()
+            let option={
+                xAxis: {
+                    type: 'category',
+                    data: data.columns
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: data.data,
+                        type: 'bar',
+                        itemStyle:{
+                            //color:'#009DFF'
+                            color:'#8080FF'
+                        },
+                    }
+                ]
+            }
+            myChart.setOption(option)
+            myChart.hideLoading()
+        }
     },
 
 
