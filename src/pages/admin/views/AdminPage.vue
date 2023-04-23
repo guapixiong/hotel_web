@@ -49,6 +49,29 @@
                         :type="collapsed ? 'menu-unfold' : 'menu-fold'"
                         @click="collapsed=!collapsed"
                     />
+                    <a-dropdown style="margin-left: 1400px;width: 200px">
+                        <a class="ant-dropdown-link"  @click="e => e.preventDefault()"><a-icon type="user" /><a-icon type="down" />
+                        </a>
+                        <a-menu slot="overlay">
+                            <a-menu-item>
+                                <a @click="openPasswordModal">更改密码</a>
+                            </a-menu-item>
+                            <a-menu-item>
+                                <a  @click="signOut">退出登录</a>
+                            </a-menu-item>
+                        </a-menu>
+                    </a-dropdown>
+                    <a-modal :visible="passwordModal.visible" @cancel="cancelPasswordModal" @ok="okUpdatePassword">
+                        <a-form-model>
+                            <a-form-model-item label="原密码">
+                                <a-input-password v-model="passwordModal.oldPassword"></a-input-password>
+                            </a-form-model-item>
+                            <a-form-model-item label="新密码">
+                                <a-input-password v-model="passwordModal.newPassword"></a-input-password>
+                            </a-form-model-item>
+                        </a-form-model>
+                    </a-modal>
+
                 </a-layout-header>
                 <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#ffff' }">
 <!--                    <a @click="goBack"><a-icon type="double-left" />返回</a>-->
@@ -63,6 +86,7 @@
 import zh_CN from 'ant-design-vue/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+import {updatePassword} from "@/api/admin/administrator";
 moment.locale('zh-cn');
 export default {
     name: "admin-page",
@@ -70,6 +94,11 @@ export default {
         return {
             collapsed: false,
             zh_CN,
+            passwordModal:{
+                visible:false,
+                oldPassword:'',
+                newPassword:'',
+            }
         };
     },
     mounted() {
@@ -78,8 +107,39 @@ export default {
     methods:{
         goBack(){
             this.$router.go(-1)
-        }
-    }
+        },
+        signOut(){
+            localStorage.clear()
+            this.$router.replace('/login')
+        },
+        openPasswordModal(){
+          this.passwordModal.visible=true
+        },
+        cancelPasswordModal(){
+            this.passwordModal.visible=false
+        },
+
+        okUpdatePassword(){
+            let me=this
+            let params={
+                id:localStorage.getItem("administrator_id"),
+                oldPassword: me.passwordModal.oldPassword,
+                newPassword: me.passwordModal.newPassword
+            }
+            //console.log(params)
+            updatePassword(params).then(r=>{
+                if(r.data){
+                    me.$message.success("修改成功")
+                    me.passwordModal.visible=false
+                }
+                else {
+                    me.$message.error("修改失败,原密码错误")
+                }
+            })
+
+        },
+
+    },
 }
 </script>
 

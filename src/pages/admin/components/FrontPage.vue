@@ -116,7 +116,7 @@ export default {
                 start:start.format('yyyy-MM-DD 00:01'),
                 end:end.format('yyyy-MM-DD 23:59')
             }
-            console.log(param)
+            //console.log(param)
             getCustomerFlowByTime(param).then((r)=>{
                 if(r.status===200 && r.data.length>0){
                     let old=0

@@ -50,6 +50,9 @@ export default {
 
         }
     },
+    mounted() {
+
+    },
     methods:{
         goToHome(){
             let me=this
@@ -57,32 +60,34 @@ export default {
                 username:me.account.name,
                 password:me.account.password
             }
-            console.log(params)
+            //console.log(params)
             this.$refs.ruleForm.validate(valid => {
                 if (valid) {
                     signIn(params).then(r=>{
-                        if(r.data){
-
+                        if(r.status===200){
+                            //console.log(r.data)
+                            localStorage.setItem('token',r.data.token)
+                            localStorage.setItem('administrator_id',r.data.uid)
                             me.$message.success("登录成功")
                             setTimeout(function (){
                                 window.location.href='/admin'
                             },2000)
 
                         }
-                        else
+                        if(r.status===203){
                             me.$message.error("密码错误或者用户不存在")
+                        }
+
                     })
                 }
                 else {
                     return false;
                 }
             })
-
-
         },
         goToSignUp(){
-            this.$router.push('/signIn')
-        }
+            this.$router.push('/login/signUp')
+        },
 
     },
 }
