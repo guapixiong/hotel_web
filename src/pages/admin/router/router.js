@@ -111,7 +111,7 @@ router.beforeEach((to, from, next) => {
             message.info("当前未登录即将跳转到登录界面")
             setTimeout(function (){
                 next({
-                    path: '/login',
+                    path: '/login/signIn',
                 })
             },1000)
 

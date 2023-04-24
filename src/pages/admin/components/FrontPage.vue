@@ -65,11 +65,17 @@
                 </a-col>
             </a-row>
         </div>
-        <a-card style="height: 380px;margin: 10px;border-radius: 5px">
-            <p style="font-weight: bold;font-size: 16px">用户画像</p>
-            <a-row>
-                <a-col span="12">客户性别占比</a-col>
-                <a-col span="12">人群年龄占比</a-col>
+        <a-card style="height: 380px;margin: 20px;border-radius: 5px">
+            <p style="font-weight: bold;font-size: 16px">客流量</p>
+            <a-row :gutter="100">
+                <a-col span="12">
+                    <p style="font-weight: bold;font-size: 16px">  <a-range-picker  :format="chart3.timeFormat" v-model="chart3.time" size="small" @change="chart3TimeChange"/></p>
+
+                    <div style="height: 320px;width: 1000px" id="chart3">
+
+                    </div>
+                </a-col>
+<!--                <a-col span="12">人群年龄占比</a-col>-->
             </a-row>
         </a-card>
     </div>
@@ -105,6 +111,10 @@ export default {
                 time:[moment(moment().format('YYYY-MM-01')), moment(moment().format('YYYY-MM-01')).add(1,'M')],
             },
             chart2:{
+                timeFormat: 'YYYY-MM-DD',
+                time:[moment(moment().format('YYYY-MM-01')), moment(moment().format('YYYY-MM-01')).add(1,'M')],
+            },
+            chart3:{
                 timeFormat: 'YYYY-MM-DD',
                 time:[moment(moment().format('YYYY-MM-01')), moment(moment().format('YYYY-MM-01')).add(1,'M')],
             }
@@ -196,8 +206,8 @@ export default {
                 me.drawChart1(data)
             })
             getSalesByTime({
-                start:me.chart1.time[0].format('yyyy-MM-DD'),
-                end:me.chart1.time[1].format('yyyy-MM-DD')
+                start:me.chart2.time[0].format('yyyy-MM-DD'),
+                end:me.chart2.time[1].format('yyyy-MM-DD')
             }).then(r=>{
                 if(r.data.length>0){
                     let processData=_.groupBy(r.data,'time')
@@ -211,9 +221,25 @@ export default {
                         })
                         data.data.push(count)
                     }
-                    console.log(data)
+                    //console.log(data)
                     me.drawChart2(data)
                     //console.log(r.data)
+                }
+            })
+            getCustomerFlowByTime({
+                start:me.chart3.time[0].format('yyyy-MM-DD'),
+                end:me.chart3.time[1].format('yyyy-MM-DD')
+            }).then(r=>{
+                if(r.data.length>0){
+                    //console.log(r.data)
+                    let processData=_.groupBy(r.data,'time')
+                    let data={columns:[],data:[]}
+                    for(let key in processData){
+                        data.columns.push(key)
+                        let count=processData[key].length
+                        data.data.push(count)
+                    }
+                    this.drawChart3(data)
                 }
             })
         },
@@ -260,7 +286,7 @@ export default {
                     },
                     label:{
                         formatter:function (arg){
-                            return arg.data.value
+                            return arg.data.value+'个'
                         }
                     }
                 }]
@@ -272,8 +298,8 @@ export default {
         chart2TimeChange(){
             let me=this
             getSalesByTime({
-                start:me.chart1.time[0].format('yyyy-MM-DD'),
-                end:me.chart1.time[1].format('yyyy-MM-DD')
+                start:me.chart2.time[0].format('yyyy-MM-DD'),
+                end:me.chart2.time[1].format('yyyy-MM-DD')
             }).then(r=>{
                 if(r.data.length>0){
                     let processData=_.groupBy(r.data,'time')
@@ -287,7 +313,7 @@ export default {
                         })
                         data.data.push(count)
                     }
-                    console.log(data)
+                    //console.log(data)
                     me.drawChart2(data)
                     //console.log(r.data)
                 }
@@ -304,16 +330,96 @@ export default {
                     data: data.columns
                 },
                 yAxis: {
+                    name:'入账金额/¥',
                     type: 'value'
+                },
+                legend:{},
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer:{
+                        label:{
+                            // formatter:function (arg){
+                            // }
+                        }
+                    }
                 },
                 series: [
                     {
+                        name:'入账金额',
                         data: data.data,
                         type: 'bar',
                         itemStyle:{
                             //color:'#009DFF'
                             color:'#8080FF'
                         },
+                        label:{
+                            // formatter:function (arg){
+                            //     return arg.data.value+'¥'
+                            // }
+                        }
+                    }
+                ]
+            }
+            myChart.setOption(option)
+            myChart.hideLoading()
+        },
+        chart3TimeChange(){
+            let me=this
+            getCustomerFlowByTime({
+                start:me.chart3.time[0].format('yyyy-MM-DD'),
+                end:me.chart3.time[1].format('yyyy-MM-DD')
+            }).then(r=>{
+                if(r.data.length>0){
+                    //console.log(r.data)
+                    let processData=_.groupBy(r.data,'time')
+                    let data={columns:[],data:[]}
+                    for(let key in processData){
+                        data.columns.push(key)
+                        let count=processData[key].length
+                        data.data.push(count)
+                    }
+                    me.drawChart3(data)
+                }
+            })
+        },
+        drawChart3(data){
+            let me=this
+            echarts.dispose(document.getElementById('chart3'))
+            let myChart=echarts.init(document.getElementById('chart3'))
+            myChart.showLoading()
+            let option={
+                xAxis: {
+                    type: 'category',
+                    data: data.columns
+                },
+                yAxis: {
+                    name:'人数/个',
+                    type: 'value'
+                },
+                legend:{},
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer:{
+                        label:{
+                            // formatter:function (arg){
+                            // }
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name:'人数',
+                        data: data.data,
+                        type: 'bar',
+                        itemStyle:{
+                            //color:'#009DFF'
+                            color:'#8080FF'
+                        },
+                        label:{
+                            // formatter:function (arg){
+                            //     return arg.data.value+'¥'
+                            // }
+                        }
                     }
                 ]
             }

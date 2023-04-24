@@ -39,7 +39,7 @@ service.interceptors.response.use(
                     localStorage.clear()
                     message.info("token过期，请重新登录")
                     setTimeout(function (){
-                        router.replace('/login').catch(()=>{})
+                        router.replace('/login/signIn').catch(()=>{})
                     },1000)
 
             }

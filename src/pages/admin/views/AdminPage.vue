@@ -110,7 +110,7 @@ export default {
         },
         signOut(){
             localStorage.clear()
-            this.$router.replace('/login')
+            this.$router.replace('/login/signUp')
         },
         openPasswordModal(){
           this.passwordModal.visible=true
