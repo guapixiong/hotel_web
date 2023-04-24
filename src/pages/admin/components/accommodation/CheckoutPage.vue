@@ -9,63 +9,56 @@
             <span style="margin-left: 30px" >退还押金：¥{{-calculatePay}}</span>
         </template>
         <a-button style="margin-left: 30px;width: 200px" type="primary" @click="checkoutOperate">结账</a-button>
-        <a-card style="height: 255px;margin: 20px;border-radius: 5px">
+        <a-card style="height: 150px;margin: 10px;border-radius: 5px">
             <p>订单信息</p>
             <div style="margin-left: 20px">
                 <a-form layout="inline">
                     <a-row :gutter="24">
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="订单编号" >{{details.order_id}}</a-form-item>
                         </a-col>
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="订单状态"><a-tag :color="status1[details.order_status][1]" >{{status1[details.order_status][0]}}</a-tag></a-form-item>
                         </a-col>
-                    </a-row>
-                    <a-row :gutter="24">
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="入住时间">{{ details.check_in_time }}</a-form-item>
                         </a-col>
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="退房时间">{{ details.check_out_time }}</a-form-item>
                         </a-col>
                     </a-row>
                     <a-row :gutter="24">
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="订单创建时间">{{ details.create_time }}</a-form-item>
                         </a-col>
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="订单完成时间">{{ details.complete_time }}</a-form-item>
                         </a-col>
-                    </a-row>
-                    <a-row :gutter="24">
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="应付金额">¥{{ getTotalAmount }}</a-form-item>
                         </a-col>
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="实付金额">¥{{ details.final_payment_amount }}</a-form-item>
                         </a-col>
                     </a-row>
-
                 </a-form>
             </div>
         </a-card>
-        <a-card style="height: 255px;margin: 20px;border-radius: 5px">
+        <a-card style="height: 230px;margin: 10px;border-radius: 5px">
             <p>房间信息</p>
             <div style="margin-left: 20px">
                 <a-form layout="inline">
                     <a-row :gutter="24">
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="房间号码">{{ details.room_number }}</a-form-item>
                         </a-col>
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="房间类型">{{ details.type }}</a-form-item>
                         </a-col>
-                    </a-row>
-                    <a-row :gutter="24">
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="住房类型">{{ details.room_type !=='1' ? '标准房':'钟点房'}}</a-form-item>
                         </a-col>
-                        <a-col :span="12">
+                        <a-col :span="6">
                             <a-form-item label="房间价格">¥{{ details.room_price }}</a-form-item>
                         </a-col>
                     </a-row>
@@ -79,7 +72,7 @@
                     </a-row>
                     <a-row :gutter="24">
                         <a-col :span="12">
-                            <a-form-item label="房间图片"><img style="width: 100px;height: 50px" :src="details.room_url"></a-form-item>
+                            <a-form-item label="房间图片"><img style="width: 140px;height: 80px" :src="details.room_url"></a-form-item>
                         </a-col>
                         <a-col :span="12">
                             <a-form-item label="房间介绍">{{ details.room_introduction }}</a-form-item>
@@ -88,9 +81,9 @@
                 </a-form>
             </div>
         </a-card>
-        <a-card style="height: 350px;margin: 20px;border-radius: 5px">
+        <a-card style="height: 270px;margin: 10px;border-radius: 5px">
             <p>顾客信息</p>
-            <div style="margin-left: 20px">
+            <div style="margin-left: 20px" >
                 <a-form layout="inline">
                     <a-row :gutter="24">
                         <a-col :span="12">
@@ -101,15 +94,19 @@
                         </a-col>
                     </a-row>
                 </a-form>
-                <a-table :columns="columns1" :dataSource="occupantData" :rowKey="(record)=>record.id" :scroll="{  y: 150 }">
-                    <span slot="type" slot-scope="text">{{type[text]}}</span>
-                </a-table>
+                <div style="height: 120px">
+                    <a-table  :columns="columns1" :dataSource="occupantData" :rowKey="(record)=>record.id" :scroll="{  y: 80 }" size="small">
+                        <span slot="type" slot-scope="text">{{type[text]}}</span>
+                    </a-table>
+                </div>
+
             </div>
         </a-card>
-        <a-card style="height: 300px;margin: 20px;border-radius: 5px">
+        <a-card style="height: 220px;margin: 10px;border-radius: 5px">
             <p>商品信息</p>
-            <div style="margin-left: 20px">
-                <a-table :columns="columns" :dataSource="commodityData" :rowKey="(record,index)=>index" :scroll="{  y: 150 }">
+            <div style="margin-left: 20px;height: 180px">
+
+                <a-table  :columns="columns" :dataSource="commodityData" :rowKey="(record,index)=>index" :scroll="{  y: 80 }" size="small">
                     <span slot="price" slot-scope="text">¥{{text}}</span>
                     <span slot="money" slot-scope="text">¥{{text}}</span>
                 </a-table>

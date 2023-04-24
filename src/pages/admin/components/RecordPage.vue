@@ -50,7 +50,7 @@
                     </a-col>
                     <a-col :span="12">
                         <a-form-item label="订单状态">
-                            <a-select v-model="orderItem.order_status" >
+                            <a-select v-model="orderItem.order_status" disabled>
                                 <a-select-option v-for="item in statusList" :key="item.id" :value="item.id">{{ item.value }}
                             </a-select-option>
                         </a-select></a-form-item>
@@ -180,7 +180,7 @@ export default {
                 dataCopy:[],
                 pagination: {
                     total: 0,
-                    pageSize: 20,//每页中显示10条数据
+                    pageSize: 14,//每页中显示10条数据
                     //showSizeChanger: true,
                     // pageSizeOptions: ["10", "20", "50", "100"],//每页中显示的数据
                     showTotal: total => `共有 ${total} 条数据`,  //分页中显示总的数据

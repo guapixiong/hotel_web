@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-card style="height: 200px;margin: 20px;border-radius: 5px">
+        <a-card style="height: 200px;margin: 10px;border-radius: 5px">
             <p style="font-weight: bold;font-size: 16px">经营概况</p>
             <a-row :gutter="[24,24]">
                 <a-col span="6">
@@ -44,34 +44,33 @@
                 </a-col>
             </a-row>
         </a-card>
-        <div style="margin: 20px;">
+        <div style="margin: 10px;">
             <a-row  :gutter="100">
                 <a-col span="8">
-                    <a-card style="width: 400px;height: 400px;border-radius: 5px">
+                    <a-card style="width: 500px;height: 320px;border-radius: 5px">
                         <p style="font-weight: bold;font-size: 16px">订单状态占比</p>
                         <a-range-picker  :format="chart1.timeFormat" v-model="chart1.time" size="small" @change="chart1TimeChange"/>
-                        <div style="width: 350px;height: 280px" id="chart1">
+                        <div style="width: 400px;height: 280px" id="chart1">
                         </div>
                     </a-card>
                 </a-col>
                 <a-col span="16">
-                    <a-card style="width: auto;height: 400px;border-radius: 5px">
+                    <a-card style="width: auto;height: 320px;border-radius: 5px">
                         <p style="font-weight: bold;font-size: 16px">入账记录</p>
                         <a-range-picker  :format="chart2.timeFormat" v-model="chart2.time" size="small" @change="chart2TimeChange"/>
-                        <div style="height: 280px;width: 800px" id="chart2">
-
+                        <div style="height: 280px;width: 900px" id="chart2">
                         </div>
                     </a-card>
                 </a-col>
             </a-row>
         </div>
-        <a-card style="height: 380px;margin: 20px;border-radius: 5px">
+        <a-card style="height: 360px;margin: 10px;border-radius: 5px">
             <p style="font-weight: bold;font-size: 16px">客流量</p>
             <a-row :gutter="100">
                 <a-col span="12">
                     <p style="font-weight: bold;font-size: 16px">  <a-range-picker  :format="chart3.timeFormat" v-model="chart3.time" size="small" @change="chart3TimeChange"/></p>
 
-                    <div style="height: 320px;width: 1000px" id="chart3">
+                    <div style="height: 285px;width: 1000px" id="chart3">
 
                     </div>
                 </a-col>
@@ -277,7 +276,7 @@ export default {
 
                 series:[{
                     type:'pie',
-                    radius:['40%', '70%'],
+                    radius:['30%', '50%'],
                     data:data,
                     itemStyle:{
                         //color:'#009DFF'
@@ -302,9 +301,10 @@ export default {
                 start:me.chart2.time[0].format('yyyy-MM-DD'),
                 end:me.chart2.time[1].format('yyyy-MM-DD')
             }).then(r=>{
+                let data={columns:[],data:[]}
                 if(r.data.length>0){
                     let processData=_.groupBy(r.data,'time')
-                    let data={columns:[],data:[]}
+
                     //console.log(processData)
                     for(let key in processData){
                         data.columns.push(key)
@@ -314,10 +314,9 @@ export default {
                         })
                         data.data.push(count)
                     }
-                    //console.log(data)
-                    me.drawChart2(data)
-                    //console.log(r.data)
                 }
+                me.drawChart2(data)
+
             })
         },
         drawChart2(data){
@@ -328,7 +327,8 @@ export default {
             let option={
                 xAxis: {
                     type: 'category',
-                    data: data.columns
+                    data: data.columns,
+                    name:'日期'
                 },
                 yAxis: {
                     name:'入账金额/¥',
@@ -370,17 +370,19 @@ export default {
                 start:me.chart3.time[0].format('yyyy-MM-DD'),
                 end:me.chart3.time[1].format('yyyy-MM-DD')
             }).then(r=>{
+                let data={columns:[],data:[]}
                 if(r.data.length>0){
                     //console.log(r.data)
                     let processData=_.groupBy(r.data,'time')
-                    let data={columns:[],data:[]}
+
                     for(let key in processData){
                         data.columns.push(key)
                         let count=processData[key].length
                         data.data.push(count)
                     }
-                    me.drawChart3(data)
+
                 }
+                me.drawChart3(data)
             })
         },
         drawChart3(data){
@@ -391,7 +393,8 @@ export default {
             let option={
                 xAxis: {
                     type: 'category',
-                    data: data.columns
+                    data: data.columns,
+                    name:'日期'
                 },
                 yAxis: {
                     name:'人数/个',

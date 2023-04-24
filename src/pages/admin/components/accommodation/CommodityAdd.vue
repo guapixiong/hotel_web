@@ -14,9 +14,9 @@
             <span slot="operate" slot-scope="record"><a-button type="primary"
                                                                @click="addCommodity(record)">添加</a-button></span>
         </a-table>
-        <a-card title="购物车">
+        <a-card title="购物车" style="height: 400px">
             <a-table style="margin: 20px;border-radius: 5px" :columns="columns1" :data-source="commodities" bordered :rowKey="(record)=>record.commodity_id"
-                     :scroll="{  y: 300 }">
+                     :scroll="{  y: 180 }">
                 <span slot="price" slot-scope="text,record">¥{{ text*record.count }}</span>
                 <template slot="count" slot-scope="text,record">
                     <span v-if="editable">

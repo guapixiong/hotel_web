@@ -50,7 +50,7 @@
                         @click="collapsed=!collapsed"
                     />
                     <a-dropdown style="margin-left: 1400px;width: 200px">
-                        <a class="ant-dropdown-link"  @click="e => e.preventDefault()"><a-icon type="user" /><a-icon type="down" />
+                        <a class="ant-dropdown-link"  @click="e => e.preventDefault()"><a-icon type="user"  class="trigger"/>
                         </a>
                         <a-menu slot="overlay">
                             <a-menu-item>
@@ -73,7 +73,7 @@
                     </a-modal>
 
                 </a-layout-header>
-                <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#ffff' }">
+                <a-layout-content :style="{ margin: '24px 16px', padding: '24px',height:'920px', background: '#ffff' }">
 <!--                    <a @click="goBack"><a-icon type="double-left" />返回</a>-->
                     <router-view></router-view>
                 </a-layout-content>
@@ -111,7 +111,7 @@ export default {
         signOut(){
             this.$store.commit('delToken')
             this.$store.commit('delAdministratorId')
-            this.$router.replace('/login/signUp')
+            this.$router.replace('/login/signIn')
         },
         openPasswordModal(){
           this.passwordModal.visible=true
@@ -152,7 +152,6 @@ export default {
     cursor: pointer;
     transition: color 0.3s;
 }
-
 #components-layout-demo-custom-trigger .trigger:hover {
     color: #8080FF;
 }
