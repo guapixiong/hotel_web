@@ -1,10 +1,10 @@
 import VueRouter from 'vue-router';
 import {message} from "ant-design-vue";
-
+import store from '@/pages/admin/store/store'
 const routes = [
     {
       path: '/',
-      redirect:'/login'
+      redirect:'/admin/frontPage'
     },
     {
         path:'/admin',
@@ -101,10 +101,19 @@ const router = new VueRouter({
     routes,
     mode: 'history'
 })
+// 设置路由守卫，在进页面之前，判断有token，才进入页面，否则返回登录页面
+if (localStorage.getItem("token")) {
+    store.commit("setToken", localStorage.getItem("token"));
+}
 router.beforeEach((to, from, next) => {
+
+
+    store.dispatch('clearCancel')
+
+
     if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
 
-        if (localStorage.getItem('token')!=undefined&&localStorage.getItem('token').length>0) {  // 获取当前的token是否存在
+        if (store.state.token) {  // 获取当前的token是否存在
             next();
         }
         else {

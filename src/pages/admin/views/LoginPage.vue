@@ -18,7 +18,7 @@ export default {
         }
     },
     mounted() {
-        this.$router.push('/login/signIn')
+        //this.$router.push('/login/signIn')
     }
 }
 </script>

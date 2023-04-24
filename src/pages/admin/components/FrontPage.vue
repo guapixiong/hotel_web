@@ -132,6 +132,7 @@ export default {
         //加载页面数据
         loadData(){
             let me=this
+            //console.log(''||null)
             getRoomTotal().then(r=>{
                 if(r.status===200)
                     me.totalNumberOfRooms=r.data

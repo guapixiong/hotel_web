@@ -245,7 +245,7 @@ export default {
                 record_id:me.record_id,
                 commodities:me.commodities
             }
-            console.log(params)
+            //console.log(params)
             insertCommodityRecords(params).then(r=>{
                 if(r.status===200&&r.data===1){
                     me.$message.success("添加成功")

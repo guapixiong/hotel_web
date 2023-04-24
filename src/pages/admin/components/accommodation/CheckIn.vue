@@ -60,7 +60,7 @@ export default {
             let start='',end=''
             getRoomInfoByRecordId({order_id: me.identityRegistration.order_id}).then(
                 r=>{
-                    console.log(r.data)
+                    //console.log(r.data)
                     if(r.status===200){
                         start=r.data.check_in_time
                         end=r.data.check_out_time

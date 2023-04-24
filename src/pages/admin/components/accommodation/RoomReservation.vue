@@ -126,7 +126,7 @@ export default {
                 start:me.destineInfo.timePicker[0].format('YYYY-MM-DD HH:mm'),
                 end:me.destineInfo.timePicker[1].format('YYYY-MM-DD HH:mm')
             }
-            console.log(params)
+            //console.log(params)
             getAvailableRoomByTime(params).then(response=>{
                 if(response.status===200&&response.data.length>0){
                     me.roomData=response.data
@@ -170,7 +170,7 @@ export default {
                             me.$message.error("预定失败")
                     })
                 } else {
-                    console.log('error submit!!');
+                    //console.log('error submit!!');
                     return false;
                 }
             });

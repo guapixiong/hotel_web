@@ -102,14 +102,15 @@ export default {
         };
     },
     mounted() {
-        this.$router.push('/admin/frontPage')
+        //this.$router.push('/admin/frontPage')
     },
     methods:{
         goBack(){
             this.$router.go(-1)
         },
         signOut(){
-            localStorage.clear()
+            this.$store.commit('delToken')
+            this.$store.commit('delAdministratorId')
             this.$router.replace('/login/signUp')
         },
         openPasswordModal(){
@@ -122,7 +123,7 @@ export default {
         okUpdatePassword(){
             let me=this
             let params={
-                id:localStorage.getItem("administrator_id"),
+                id:me.$store.state.administrator_id,
                 oldPassword: me.passwordModal.oldPassword,
                 newPassword: me.passwordModal.newPassword
             }
