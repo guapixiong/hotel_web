@@ -207,7 +207,7 @@ export default {
 
 
             let index=this.commodities.findIndex((value => value.commodity_id===record.commodity_id))
-            this.commodities[index].count=value
+            this.commodities[index].count=Number.parseInt(value)
             }
         },
         // /**
